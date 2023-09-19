@@ -9,7 +9,7 @@ part of 'user_setting_response.dart';
 _$_UserSettingResponse _$$_UserSettingResponseFromJson(
         Map<String, dynamic> json) =>
     _$_UserSettingResponse(
-      id: json['id'] as String,
+      id: json['id'] as int,
       name: json['name'] as String,
     );
 

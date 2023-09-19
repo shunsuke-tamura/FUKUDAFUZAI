@@ -9,7 +9,7 @@ class UserSettingResponse with _$UserSettingResponse {
   const UserSettingResponse._();
 
   const factory UserSettingResponse({
-    @JsonKey(name: 'id') required String id,
+    @JsonKey(name: 'id') required int id,
     @JsonKey(name: 'name') required String name,
   }) = _UserSettingResponse;
 

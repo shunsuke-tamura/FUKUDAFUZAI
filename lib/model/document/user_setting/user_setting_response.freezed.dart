@@ -21,7 +21,7 @@ UserSettingResponse _$UserSettingResponseFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$UserSettingResponse {
   @JsonKey(name: 'id')
-  String get id => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
   @JsonKey(name: 'name')
   String get name => throw _privateConstructorUsedError;
 
@@ -37,8 +37,7 @@ abstract class $UserSettingResponseCopyWith<$Res> {
           UserSettingResponse value, $Res Function(UserSettingResponse) then) =
       _$UserSettingResponseCopyWithImpl<$Res, UserSettingResponse>;
   @useResult
-  $Res call(
-      {@JsonKey(name: 'id') String id, @JsonKey(name: 'name') String name});
+  $Res call({@JsonKey(name: 'id') int id, @JsonKey(name: 'name') String name});
 }
 
 /// @nodoc
@@ -61,7 +60,7 @@ class _$UserSettingResponseCopyWithImpl<$Res, $Val extends UserSettingResponse>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -78,8 +77,7 @@ abstract class _$$_UserSettingResponseCopyWith<$Res>
       __$$_UserSettingResponseCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {@JsonKey(name: 'id') String id, @JsonKey(name: 'name') String name});
+  $Res call({@JsonKey(name: 'id') int id, @JsonKey(name: 'name') String name});
 }
 
 /// @nodoc
@@ -100,7 +98,7 @@ class __$$_UserSettingResponseCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -122,7 +120,7 @@ class _$_UserSettingResponse extends _UserSettingResponse {
 
   @override
   @JsonKey(name: 'id')
-  final String id;
+  final int id;
   @override
   @JsonKey(name: 'name')
   final String name;
@@ -162,7 +160,7 @@ class _$_UserSettingResponse extends _UserSettingResponse {
 
 abstract class _UserSettingResponse extends UserSettingResponse {
   const factory _UserSettingResponse(
-          {@JsonKey(name: 'id') required final String id,
+          {@JsonKey(name: 'id') required final int id,
           @JsonKey(name: 'name') required final String name}) =
       _$_UserSettingResponse;
   const _UserSettingResponse._() : super._();
@@ -172,7 +170,7 @@ abstract class _UserSettingResponse extends UserSettingResponse {
 
   @override
   @JsonKey(name: 'id')
-  String get id;
+  int get id;
   @override
   @JsonKey(name: 'name')
   String get name;
