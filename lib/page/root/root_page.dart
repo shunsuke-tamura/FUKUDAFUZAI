@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fukuda_fuzai/model/document/shoot/shoot_response.dart';
 import 'package:fukuda_fuzai/model/entity/sensor_per_info/sensor_per_info_entity.dart';
 import 'package:fukuda_fuzai/model/entity/shoot/shoot_entity.dart';
 import 'package:fukuda_fuzai/model/entity/user_setting/user_setting_entity.dart';
@@ -62,7 +63,7 @@ class _RootPageState extends ConsumerState<RootPage> {
       (GyroscopeEvent event) {
         gyr = event;
         sendBinary();
-        print(event);
+        // print(event);
         ref.read(xRouteProvider.notifier).update((state) => state + event.x);
         ref.read(zRouteProvider.notifier).update((state) => state + event.z);
       },
@@ -96,6 +97,19 @@ class _RootPageState extends ConsumerState<RootPage> {
       conn!.on("binary").listen((data) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Got binary")));
+        String result = String.fromCharCodes(data);
+        Map<dynamic, dynamic> map = jsonDecode(result);
+        String strData = utf8.decode(map.values.map((e) => e as int).toList());
+        Map<String, dynamic> jsonData = jsonDecode(strData);
+        final message = MessageEntity.fromJson(jsonData);
+        if (message.type == "shootRes") {
+          final shootRes = message.data as ShootResponse;
+          ref
+              .read(scoreProvider.notifier)
+              .update((state) => state + (shootRes.score ?? 0));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("score: ${ref.read(scoreProvider.notifier)}")));
+        }
       });
 
       conn!.on("close").listen((event) {
@@ -119,7 +133,7 @@ class _RootPageState extends ConsumerState<RootPage> {
     print('コネクト');
     print(connection);
 
-    sendUserSetting();
+    // sendUserSetting();
 
     conn!.on("open").listen((event) {
       setState(() {
@@ -153,11 +167,16 @@ class _RootPageState extends ConsumerState<RootPage> {
 
   void sendUserSetting() {
     const userSetting = UserSettingEntity(name: 'フクダ');
-    const message = MessageEntity(type: 'settingUser', data: userSetting);
+    const message = MessageEntity(type: 'userSetting', data: userSetting);
     final json = message.toJson();
     final List<int> codeUnits = jsonEncode(json).codeUnits;
     final Uint8List unit8List = Uint8List.fromList(codeUnits);
     conn?.sendBinary(unit8List);
+  }
+
+  void gyroReset() {
+    ref.read(xRouteProvider.notifier).update((state) => 0);
+    ref.read(zRouteProvider.notifier).update((state) => 0);
   }
 
   void sendBinary() {
@@ -253,6 +272,10 @@ class _RootPageState extends ConsumerState<RootPage> {
                     .copyWith(color: ColorConstant.black30),
               ),
               ElevatedButton(onPressed: connect, child: const Text("connect")),
+              ElevatedButton(
+                  onPressed: sendUserSetting, child: const Text("userSetting")),
+              ElevatedButton(
+                  onPressed: gyroReset, child: const Text("gyro reset")),
               ElevatedButton(onPressed: shoot, child: const Text('shoot')),
               ElevatedButton(
                   onPressed: sendBinary,
