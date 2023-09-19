@@ -17,8 +17,8 @@ final routerProvider = Provider<GoRouter>(
             builder: (context, state) => const QrPage(),
           ),
           GoRoute(
-            path: 'root',
-            builder: (context, state) => const GamePage(),
+            path: 'game',
+            builder: (context, state) =>  GamePage(state.extra as String),
           ),
         ],
       ),

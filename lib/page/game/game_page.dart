@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fukuda_fuzai/model/document/shoot/shoot_response.dart';
 import 'package:fukuda_fuzai/model/entity/sensor_per_info/sensor_per_info_entity.dart';
 import 'package:fukuda_fuzai/model/entity/shoot/shoot_entity.dart';
 import 'package:fukuda_fuzai/model/entity/user_setting/user_setting_entity.dart';
@@ -17,7 +16,8 @@ import 'package:fukuda_fuzai/util/constant/text_style_constant.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 class GamePage extends ConsumerStatefulWidget {
-  const GamePage({Key? key}) : super(key: key);
+  const GamePage(this.id, {Key? key}) : super(key: key);
+  final String id;
 
   @override
   ConsumerState<GamePage> createState() => _RootPageState();
@@ -46,7 +46,7 @@ class _RootPageState extends ConsumerState<GamePage> {
   @override
   void initState() {
     Future.delayed(Duration(seconds: 3), () {
-      connect('kw0i31y18ic');
+      connect(widget.id);
     });
     super.initState();
 
@@ -97,24 +97,6 @@ class _RootPageState extends ConsumerState<GamePage> {
             .showSnackBar(SnackBar(content: Text(data)));
       });
 
-      conn!.on("binary").listen((data) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Got binary")));
-        String result = String.fromCharCodes(data);
-        Map<dynamic, dynamic> map = jsonDecode(result);
-        String strData = utf8.decode(map.values.map((e) => e as int).toList());
-        Map<String, dynamic> jsonData = jsonDecode(strData);
-        final message = MessageEntity.fromJson(jsonData);
-        if (message.type == "shootRes") {
-          final shootRes = message.data as ShootResponse;
-          ref
-              .read(scoreProvider.notifier)
-              .update((state) => state + (shootRes.score ?? 0));
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("score: ${ref.read(scoreProvider.notifier)}")));
-        }
-      });
-
       conn!.on("close").listen((event) {
         setState(() {
           connected = false;
@@ -134,9 +116,6 @@ class _RootPageState extends ConsumerState<GamePage> {
     );
     conn = connection;
     print('コネクト');
-    print(connection);
-
-    // sendUserSetting();
 
     conn!.on("open").listen((event) {
       setState(() {
@@ -274,7 +253,6 @@ class _RootPageState extends ConsumerState<GamePage> {
                 style: TextStyleConstant.normal16
                     .copyWith(color: ColorConstant.black30),
               ),
-              ElevatedButton(onPressed: () => connect(_controller.text), child: const Text("connect")),
               ElevatedButton(
                   onPressed: sendUserSetting, child: const Text("userSetting")),
               ElevatedButton(
