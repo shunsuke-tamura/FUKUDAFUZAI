@@ -274,7 +274,7 @@ class _RootPageState extends ConsumerState<RootPage> {
                 style: TextStyleConstant.normal16
                     .copyWith(color: ColorConstant.black30),
               ),
-              ElevatedButton(onPressed: connect, child: const Text("connect")),
+              ElevatedButton(onPressed: () => connect(_controller.text), child: const Text("connect")),
               ElevatedButton(
                   onPressed: sendUserSetting, child: const Text("userSetting")),
               ElevatedButton(
