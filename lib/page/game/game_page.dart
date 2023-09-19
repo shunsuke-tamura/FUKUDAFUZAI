@@ -4,10 +4,12 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fukuda_fuzai/model/document/shoot/shoot_response.dart';
+import 'package:fukuda_fuzai/model/document/user_setting/user_setting_response.dart';
 import 'package:fukuda_fuzai/model/entity/sensor_per_info/sensor_per_info_entity.dart';
 import 'package:fukuda_fuzai/model/entity/shoot/shoot_entity.dart';
 import 'package:fukuda_fuzai/model/entity/user_setting/user_setting_entity.dart';
 import 'package:fukuda_fuzai/util/constant/color_constant.dart';
+import 'package:fukuda_fuzai/util/constant/enum/message_type_enum.dart';
 import 'package:peerdart/peerdart.dart';
 import 'package:fukuda_fuzai/model/document/acc/acc_document.dart';
 import 'package:fukuda_fuzai/model/document/gyr/gyr_document.dart';
@@ -148,11 +150,18 @@ class _RootPageState extends ConsumerState<GamePage> {
             .showSnackBar(SnackBar(content: Text("Got binary!")));
 
         final message = MessageEntity.fromJson(jsonData);
-        if (message.type == "shootRes") {
+        if (message.type == MessageTypeEnum.shootRes.name) {
           final shootRes = message.data as ShootResponse;
           ref
               .read(scoreProvider.notifier)
               .update((state) => state + (shootRes.score ?? 0));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("score: ${ref.read(scoreProvider.notifier)}")));
+        } else if (message.type == MessageTypeEnum.userSettingRes.name) {
+          final userSettingRes = message.data as UserSettingResponse;
+          ref
+              .read(assignedIdProvider.notifier)
+              .update((state) => userSettingRes.id);
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("score: ${ref.read(scoreProvider.notifier)}")));
         }
@@ -205,9 +214,7 @@ class _RootPageState extends ConsumerState<GamePage> {
     final Uint8List unit8List = Uint8List.fromList(codeUnits);
     conn?.sendBinary(unit8List);
     isVisibleLazer = true;
-    setState(() {
-
-    });
+    setState(() {});
     Future.delayed(Duration(milliseconds: 200), () {
       isVisibleLazer = false;
       setState(() {
