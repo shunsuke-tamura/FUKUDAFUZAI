@@ -119,7 +119,7 @@ class _RootPageState extends ConsumerState<RootPage> {
     print('コネクト');
     print(connection);
 
-    sendUserSetting();
+    // sendUserSetting();
 
     conn!.on("open").listen((event) {
       setState(() {
@@ -153,7 +153,7 @@ class _RootPageState extends ConsumerState<RootPage> {
 
   void sendUserSetting() {
     const userSetting = UserSettingEntity(name: 'フクダ');
-    const message = MessageEntity(type: 'settingUser', data: userSetting);
+    const message = MessageEntity(type: 'userSetting', data: userSetting);
     final json = message.toJson();
     final List<int> codeUnits = jsonEncode(json).codeUnits;
     final Uint8List unit8List = Uint8List.fromList(codeUnits);
@@ -253,6 +253,8 @@ class _RootPageState extends ConsumerState<RootPage> {
                     .copyWith(color: ColorConstant.black30),
               ),
               ElevatedButton(onPressed: connect, child: const Text("connect")),
+              ElevatedButton(
+                  onPressed: sendUserSetting, child: const Text("userSetting")),
               ElevatedButton(onPressed: shoot, child: const Text('shoot')),
               ElevatedButton(
                   onPressed: sendBinary,
