@@ -138,7 +138,11 @@ class _RootPageState extends ConsumerState<RootPage> {
       });
       conn!.on("binary").listen((data) {
         print('binary');
-        print(data);
+        String result = String.fromCharCodes(data);
+        Map<dynamic, dynamic> map = jsonDecode(result);
+        String strData = utf8.decode(map.values.map((e) => e as int).toList());
+        Map<String, dynamic> jsonData = jsonDecode(strData);
+        print(jsonData);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Got binary!")));
       });
