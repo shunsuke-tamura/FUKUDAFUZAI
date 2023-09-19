@@ -24,6 +24,7 @@ dependencies:
   peerdart: ^0.5.3
   sensors_plus: ^3.0.3
   flutter_webrtc: ^0.9.42+hotfix.1
+  qr_code_scanner: ^1.0.1
 
 dev_dependencies:
   flutter_test:
