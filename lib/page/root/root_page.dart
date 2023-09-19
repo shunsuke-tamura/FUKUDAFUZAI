@@ -44,6 +44,9 @@ class _RootPageState extends ConsumerState<RootPage> {
 
   @override
   void initState() {
+    Future.delayed(Duration(seconds: 3), () {
+      connect('kw0i31y18ic');
+    });
     super.initState();
 
     accelerometerEvents.listen(
@@ -110,9 +113,9 @@ class _RootPageState extends ConsumerState<RootPage> {
     });
   }
 
-  void connect() {
+  void connect(String id) {
     final connection = peer.connect(
-      _controller.text,
+      id,
       options: PeerConnectOption(serialization: SerializationType.JSON),
     );
     conn = connection;
@@ -252,7 +255,6 @@ class _RootPageState extends ConsumerState<RootPage> {
                 style: TextStyleConstant.normal16
                     .copyWith(color: ColorConstant.black30),
               ),
-              ElevatedButton(onPressed: connect, child: const Text("connect")),
               ElevatedButton(onPressed: shoot, child: const Text('shoot')),
               ElevatedButton(
                   onPressed: sendBinary,
