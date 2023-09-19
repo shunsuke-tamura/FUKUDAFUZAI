@@ -7,6 +7,7 @@ import 'package:fukuda_fuzai/model/document/shoot/shoot_response.dart';
 import 'package:fukuda_fuzai/model/entity/sensor_per_info/sensor_per_info_entity.dart';
 import 'package:fukuda_fuzai/model/entity/shoot/shoot_entity.dart';
 import 'package:fukuda_fuzai/model/entity/user_setting/user_setting_entity.dart';
+import 'package:fukuda_fuzai/util/constant/color_constant.dart';
 import 'package:peerdart/peerdart.dart';
 import 'package:fukuda_fuzai/model/document/acc/acc_document.dart';
 import 'package:fukuda_fuzai/model/document/gyr/gyr_document.dart';
@@ -32,6 +33,7 @@ class _RootPageState extends ConsumerState<GamePage> {
   bool connected = false;
   double maxX = 1;
   double maxZ = 1;
+  bool isVisibleLazer = false;
 
   @override
   void dispose() {
@@ -202,6 +204,17 @@ class _RootPageState extends ConsumerState<GamePage> {
     final List<int> codeUnits = jsonEncode(json).codeUnits;
     final Uint8List unit8List = Uint8List.fromList(codeUnits);
     conn?.sendBinary(unit8List);
+    isVisibleLazer = true;
+    setState(() {
+
+    });
+    Future.delayed(Duration(milliseconds: 200), () {
+      isVisibleLazer = false;
+      setState(() {
+
+      });
+    });
+
   }
 
   void closeConnection() {
@@ -215,17 +228,28 @@ class _RootPageState extends ConsumerState<GamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: ColorConstant.black10,
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            _renderState(),
-            const Text(
-              'Connection ID:',
+            Visibility(
+              visible: isVisibleLazer,
+              child: Image.asset('assets/images/lazer2.gif'),
             ),
-            SelectableText(peerId ?? ""),
-            Text('gyr: $gyr'),
+            GestureDetector(
+              onTap: shoot,
+              child: Image.asset(
+                'assets/images/canone2.png',
+                height: 300,
+              ),
+            ),
+            // _renderState(),
+            // const Text(
+            //   'Connection ID:',
+            // ),
+            // SelectableText(peerId ?? ""),
+            // Text('gyr: $gyr'),
             Slider(
               min: 1,
               max: 10,
@@ -239,12 +263,12 @@ class _RootPageState extends ConsumerState<GamePage> {
             ),
             ElevatedButton(
                 onPressed: gyroReset, child: const Text("gyro reset")),
-            ElevatedButton(onPressed: shoot, child: const Text('shoot')),
-            ElevatedButton(
-                onPressed: closeConnection,
-                child: const Text("Close connection,")),
-            ElevatedButton(
-                onPressed: reconnect, child: const Text("Re connect,")),
+            SizedBox(height: 32,)
+            // ElevatedButton(
+            //     onPressed: closeConnection,
+            //     child: const Text("Close connection,")),
+            // ElevatedButton(
+            //     onPressed: reconnect, child: const Text("Re connect,")),
           ],
         ),
       ),
