@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fukuda_fuzai/model/document/shoot/shoot_response.dart';
 import 'package:fukuda_fuzai/model/entity/sensor_per_info/sensor_per_info_entity.dart';
 import 'package:fukuda_fuzai/model/entity/shoot/shoot_entity.dart';
 import 'package:fukuda_fuzai/model/entity/user_setting/user_setting_entity.dart';
@@ -11,8 +12,6 @@ import 'package:fukuda_fuzai/model/document/acc/acc_document.dart';
 import 'package:fukuda_fuzai/model/document/gyr/gyr_document.dart';
 import 'package:fukuda_fuzai/model/entity/message/message_entity.dart';
 import 'package:fukuda_fuzai/provider/presentation_provider.dart';
-import 'package:fukuda_fuzai/util/constant/color_constant.dart';
-import 'package:fukuda_fuzai/util/constant/text_style_constant.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 class GamePage extends ConsumerStatefulWidget {
@@ -32,9 +31,7 @@ class _RootPageState extends ConsumerState<GamePage> {
   DataConnection? conn;
   bool connected = false;
   double maxX = 1;
-  double minX = 1;
   double maxZ = 1;
-  double minZ = 1;
 
   @override
   void dispose() {
@@ -45,9 +42,13 @@ class _RootPageState extends ConsumerState<GamePage> {
 
   @override
   void initState() {
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 2), () {
       connect(widget.id);
     });
+    Future.delayed(Duration(seconds: 4), () {
+      sendUserSetting();
+    });
+
     super.initState();
 
     accelerometerEvents.listen(
@@ -143,6 +144,16 @@ class _RootPageState extends ConsumerState<GamePage> {
         print(jsonData);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Got binary!")));
+
+        final message = MessageEntity.fromJson(jsonData);
+        if (message.type == "shootRes") {
+          final shootRes = message.data as ShootResponse;
+          ref
+              .read(scoreProvider.notifier)
+              .update((state) => state + (shootRes.score ?? 0));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("score: ${ref.read(scoreProvider.notifier)}")));
+        }
       });
     });
   }
@@ -204,71 +215,40 @@ class _RootPageState extends ConsumerState<GamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            if (maxX == 1.0) {
-              maxX = ref.read(xRouteProvider);
-            } else if (minX == 1.0) {
-              minX = ref.read(xRouteProvider);
-            } else if (maxZ == 1.0) {
-              maxZ = ref.read(zRouteProvider);
-            } else if (minZ == 1.0) {
-              minZ = ref.read(zRouteProvider);
-            }
-            setState(() {});
-          },
+      appBar: AppBar(),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            _renderState(),
+            const Text(
+              'Connection ID:',
+            ),
+            SelectableText(peerId ?? ""),
+            Text('gyr: $gyr'),
+            Slider(
+              min: 1,
+              max: 10,
+              divisions: 9,
+              value: 10 - maxX,
+              onChanged: (value) {
+                maxX = 10 - value;
+                maxZ = (10 - value) * 1.3;
+                setState(() {});
+              },
+            ),
+            ElevatedButton(
+                onPressed: gyroReset, child: const Text("gyro reset")),
+            ElevatedButton(onPressed: shoot, child: const Text('shoot')),
+            ElevatedButton(
+                onPressed: closeConnection,
+                child: const Text("Close connection,")),
+            ElevatedButton(
+                onPressed: reconnect, child: const Text("Re connect,")),
+          ],
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _renderState(),
-              const Text(
-                'Connection ID:',
-              ),
-              SelectableText(peerId ?? ""),
-              Text('gyr: $gyr'),
-              Text('maxX: $maxX'),
-              Text('minX: $minX'),
-              Text('maxZ: $maxZ'),
-              Text('minZ: $minZ'),
-              TextFormField(
-                controller: _controller,
-                textAlign: TextAlign.left,
-                autofocus: true,
-                cursorColor: ColorConstant.black30,
-                decoration: const InputDecoration(
-                  fillColor: ColorConstant.black90,
-                  filled: true,
-                  hintText: 'メッセージを入力',
-                  hintStyle:
-                      TextStyle(fontSize: 16, color: ColorConstant.black50),
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(4)),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-                style: TextStyleConstant.normal16
-                    .copyWith(color: ColorConstant.black30),
-              ),
-              ElevatedButton(
-                  onPressed: sendUserSetting, child: const Text("userSetting")),
-              ElevatedButton(
-                  onPressed: gyroReset, child: const Text("gyro reset")),
-              ElevatedButton(onPressed: shoot, child: const Text('shoot')),
-              ElevatedButton(
-                  onPressed: sendBinary,
-                  child: const Text("Send binary to peer")),
-              ElevatedButton(
-                  onPressed: closeConnection,
-                  child: const Text("Close connection,")),
-              ElevatedButton(
-                  onPressed: reconnect, child: const Text("Re connect,")),
-            ],
-          ),
-        ));
+      ),
+    );
   }
 
   Widget _renderState() {
