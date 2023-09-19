@@ -153,7 +153,7 @@ class _RootPageState extends ConsumerState<RootPage> {
 
   void sendUserSetting() {
     const userSetting = UserSettingEntity(name: 'フクダ');
-    const message = MessageEntity(type: 'shoot', data: userSetting);
+    const message = MessageEntity(type: 'settingUser', data: userSetting);
     final json = message.toJson();
     final List<int> codeUnits = jsonEncode(json).codeUnits;
     final Uint8List unit8List = Uint8List.fromList(codeUnits);
