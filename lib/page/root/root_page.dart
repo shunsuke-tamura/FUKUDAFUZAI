@@ -2,23 +2,25 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:peerdart/peerdart.dart';
 import 'package:wordwolf/model/document/acc/acc_document.dart';
 import 'package:wordwolf/model/document/gyr/gyr_document.dart';
 import 'package:wordwolf/model/entity/device_info/device_info_entity.dart';
 import 'package:wordwolf/model/entity/message/message_entity.dart';
+import 'package:wordwolf/provider/presentation_provider.dart';
 import 'package:wordwolf/util/constant/color_constant.dart';
 import 'package:wordwolf/util/constant/text_style_constant.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
-class RootPage extends StatefulWidget {
+class RootPage extends ConsumerStatefulWidget {
   const RootPage({Key? key}) : super(key: key);
 
   @override
-  State<RootPage> createState() => _RootPageState();
+  ConsumerState<RootPage> createState() => _RootPageState();
 }
 
-class _RootPageState extends State<RootPage> {
+class _RootPageState extends ConsumerState<RootPage> {
   AccelerometerEvent acc = AccelerometerEvent(0, 0, 0);
   GyroscopeEvent gyr = GyroscopeEvent(0, 0, 0);
   Peer peer = Peer(options: PeerOptions(debug: LogLevel.All));
@@ -26,6 +28,10 @@ class _RootPageState extends State<RootPage> {
   String? peerId;
   DataConnection? conn;
   bool connected = false;
+  double maxX = 1;
+  double minX = 1;
+  double maxZ = 1;
+  double minZ = 1;
 
   @override
   void dispose() {
@@ -39,9 +45,9 @@ class _RootPageState extends State<RootPage> {
     super.initState();
 
     accelerometerEvents.listen(
-          (AccelerometerEvent event) {
-       acc = event;
-       sendBinary();
+      (AccelerometerEvent event) {
+        acc = event;
+        sendBinary();
       },
       onError: (error) {
         // Logic to handle error
@@ -51,9 +57,12 @@ class _RootPageState extends State<RootPage> {
     );
 
     gyroscopeEvents.listen(
-          (GyroscopeEvent event) {
-            gyr = event;
-            sendBinary();
+      (GyroscopeEvent event) {
+        gyr = event;
+        sendBinary();
+        print(event);
+        ref.read(xRouteProvider.notifier).update((state) => state + event.x);
+        ref.read(zRouteProvider.notifier).update((state) => state + event.z);
       },
       onError: (error) {
         // Logic to handle error
@@ -133,14 +142,18 @@ class _RootPageState extends State<RootPage> {
   }
 
   void sendBinary() {
+    final xRoute = ref.read(xRouteProvider);
+    final zRoute = ref.read(zRouteProvider);
+    final xPercent = xRoute > 0 ? xRoute / maxX : xRoute / minX * -1;
+    final zPercent = zRoute > 0 ? zRoute / maxZ : zRoute / minZ * -1;
     final accDoc = AccDocument(x: acc.x, y: acc.y, z: acc.z);
-    final gyrDoc = GyrDocument(x: gyr.x, y: gyr.y, z: gyr.z);
+    final gyrDoc = GyrDocument(x: xPercent, y: gyr.y, z: zPercent);
     final deviceInfo = DeviceInfoEntity(acc: accDoc, gyro: gyrDoc);
     final message = MessageEntity(type: 'sensorInfo', data: deviceInfo);
     final json = message.toJson();
     final List<int> codeUnits = jsonEncode(json).codeUnits;
     final Uint8List unit8List = Uint8List.fromList(codeUnits);
-    conn!.sendBinary(unit8List);
+    conn?.sendBinary(unit8List);
   }
 
   void closeConnection() {
@@ -155,6 +168,22 @@ class _RootPageState extends State<RootPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            if (maxX == 1.0) {
+              maxX = ref.read(xRouteProvider);
+            } else if (minX == 1.0) {
+              minX = ref.read(xRouteProvider);
+            } else if (maxZ == 1.0) {
+              maxZ = ref.read(zRouteProvider);
+            } else if (minZ == 1.0) {
+              minZ = ref.read(zRouteProvider);
+            }
+            setState(() {
+
+            });
+          },
+        ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -164,6 +193,10 @@ class _RootPageState extends State<RootPage> {
                 'Connection ID:',
               ),
               SelectableText(peerId ?? ""),
+              Text('maxX: $maxX'),
+              Text('minX: $minX'),
+              Text('maxZ: $maxZ'),
+              Text('minZ: $minZ'),
               TextFormField(
                 controller: _controller,
                 textAlign: TextAlign.left,
