@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wordwolf/provider/domain_providers.dart';
-import 'package:wordwolf/util/constant/color_constant.dart';
+import 'package:fukuda_fuzai/provider/domain_providers.dart';
+import 'package:fukuda_fuzai/util/constant/color_constant.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

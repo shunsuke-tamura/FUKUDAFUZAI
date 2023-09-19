@@ -3,14 +3,16 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fukuda_fuzai/model/entity/sensor_per_info/sensor_per_info_entity.dart';
+import 'package:fukuda_fuzai/model/entity/shoot/shoot_entity.dart';
+import 'package:fukuda_fuzai/model/entity/user_setting/user_setting_entity.dart';
 import 'package:peerdart/peerdart.dart';
-import 'package:wordwolf/model/document/acc/acc_document.dart';
-import 'package:wordwolf/model/document/gyr/gyr_document.dart';
-import 'package:wordwolf/model/entity/device_info/device_info_entity.dart';
-import 'package:wordwolf/model/entity/message/message_entity.dart';
-import 'package:wordwolf/provider/presentation_provider.dart';
-import 'package:wordwolf/util/constant/color_constant.dart';
-import 'package:wordwolf/util/constant/text_style_constant.dart';
+import 'package:fukuda_fuzai/model/document/acc/acc_document.dart';
+import 'package:fukuda_fuzai/model/document/gyr/gyr_document.dart';
+import 'package:fukuda_fuzai/model/entity/message/message_entity.dart';
+import 'package:fukuda_fuzai/provider/presentation_provider.dart';
+import 'package:fukuda_fuzai/util/constant/color_constant.dart';
+import 'package:fukuda_fuzai/util/constant/text_style_constant.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 class RootPage extends ConsumerStatefulWidget {
@@ -114,6 +116,10 @@ class _RootPageState extends ConsumerState<RootPage> {
       options: PeerConnectOption(serialization: SerializationType.JSON),
     );
     conn = connection;
+    print('コネクト');
+    print(connection);
+
+    sendUserSetting();
 
     conn!.on("open").listen((event) {
       setState(() {
@@ -134,11 +140,24 @@ class _RootPageState extends ConsumerState<RootPage> {
       });
       conn!.on("binary").listen((data) {
         print('binary');
-        print(data);
+        String result = String.fromCharCodes(data);
+        Map<dynamic, dynamic> map = jsonDecode(result);
+        String strData = utf8.decode(map.values.map((e) => e as int).toList());
+        Map<String, dynamic> jsonData = jsonDecode(strData);
+        print(jsonData);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Got binary!")));
       });
     });
+  }
+
+  void sendUserSetting() {
+    const userSetting = UserSettingEntity(name: 'フクダ');
+    const message = MessageEntity(type: 'shoot', data: userSetting);
+    final json = message.toJson();
+    final List<int> codeUnits = jsonEncode(json).codeUnits;
+    final Uint8List unit8List = Uint8List.fromList(codeUnits);
+    conn?.sendBinary(unit8List);
   }
 
   void sendBinary() {
@@ -148,8 +167,25 @@ class _RootPageState extends ConsumerState<RootPage> {
     final zPercent = zRoute / maxZ;
     final accDoc = AccDocument(x: acc.x, y: acc.y, z: acc.z);
     final gyrDoc = GyrDocument(x: xPercent, y: gyr.y, z: zPercent);
-    final deviceInfo = DeviceInfoEntity(acc: accDoc, gyro: gyrDoc);
+    final deviceInfo = SensorPerInfoEntity(acc: accDoc, gyro: gyrDoc);
     final message = MessageEntity(type: 'sensorInfo', data: deviceInfo);
+    final json = message.toJson();
+    final List<int> codeUnits = jsonEncode(json).codeUnits;
+    final Uint8List unit8List = Uint8List.fromList(codeUnits);
+    conn?.sendBinary(unit8List);
+  }
+
+  void shoot() {
+    final xRoute = ref.read(xRouteProvider);
+    final zRoute = ref.read(zRouteProvider);
+    final xPercent = xRoute / maxX;
+    final zPercent = zRoute / maxZ;
+    final shoot = ShootEntity(
+        sensorPerInfo: SensorPerInfoEntity(
+      acc: AccDocument(x: acc.x, y: acc.y, z: acc.z),
+      gyro: GyrDocument(x: xPercent, y: gyr.y, z: zPercent),
+    ));
+    final message = MessageEntity(type: 'shoot', data: shoot);
     final json = message.toJson();
     final List<int> codeUnits = jsonEncode(json).codeUnits;
     final Uint8List unit8List = Uint8List.fromList(codeUnits);
@@ -217,6 +253,7 @@ class _RootPageState extends ConsumerState<RootPage> {
                     .copyWith(color: ColorConstant.black30),
               ),
               ElevatedButton(onPressed: connect, child: const Text("connect")),
+              ElevatedButton(onPressed: shoot, child: const Text('shoot')),
               ElevatedButton(
                   onPressed: sendBinary,
                   child: const Text("Send binary to peer")),

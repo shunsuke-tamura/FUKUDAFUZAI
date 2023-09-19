@@ -21,7 +21,7 @@ MessageEntity _$MessageEntityFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$MessageEntity {
   String get type => throw _privateConstructorUsedError;
-  DeviceInfoEntity get data => throw _privateConstructorUsedError;
+  dynamic get data => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -35,9 +35,7 @@ abstract class $MessageEntityCopyWith<$Res> {
           MessageEntity value, $Res Function(MessageEntity) then) =
       _$MessageEntityCopyWithImpl<$Res, MessageEntity>;
   @useResult
-  $Res call({String type, DeviceInfoEntity data});
-
-  $DeviceInfoEntityCopyWith<$Res> get data;
+  $Res call({String type, dynamic data});
 }
 
 /// @nodoc
@@ -54,26 +52,18 @@ class _$MessageEntityCopyWithImpl<$Res, $Val extends MessageEntity>
   @override
   $Res call({
     Object? type = null,
-    Object? data = null,
+    Object? data = freezed,
   }) {
     return _then(_value.copyWith(
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
-      data: null == data
+      data: freezed == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
-              as DeviceInfoEntity,
+              as dynamic,
     ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $DeviceInfoEntityCopyWith<$Res> get data {
-    return $DeviceInfoEntityCopyWith<$Res>(_value.data, (value) {
-      return _then(_value.copyWith(data: value) as $Val);
-    });
   }
 }
 
@@ -85,10 +75,7 @@ abstract class _$$_MessageEntityCopyWith<$Res>
       __$$_MessageEntityCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String type, DeviceInfoEntity data});
-
-  @override
-  $DeviceInfoEntityCopyWith<$Res> get data;
+  $Res call({String type, dynamic data});
 }
 
 /// @nodoc
@@ -103,17 +90,17 @@ class __$$_MessageEntityCopyWithImpl<$Res>
   @override
   $Res call({
     Object? type = null,
-    Object? data = null,
+    Object? data = freezed,
   }) {
     return _then(_$_MessageEntity(
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
-      data: null == data
+      data: freezed == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
-              as DeviceInfoEntity,
+              as dynamic,
     ));
   }
 }
@@ -129,7 +116,7 @@ class _$_MessageEntity extends _MessageEntity {
   @override
   final String type;
   @override
-  final DeviceInfoEntity data;
+  final dynamic data;
 
   @override
   String toString() {
@@ -142,12 +129,13 @@ class _$_MessageEntity extends _MessageEntity {
         (other.runtimeType == runtimeType &&
             other is _$_MessageEntity &&
             (identical(other.type, type) || other.type == type) &&
-            (identical(other.data, data) || other.data == data));
+            const DeepCollectionEquality().equals(other.data, data));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, type, data);
+  int get hashCode =>
+      Object.hash(runtimeType, type, const DeepCollectionEquality().hash(data));
 
   @JsonKey(ignore: true)
   @override
@@ -166,7 +154,7 @@ class _$_MessageEntity extends _MessageEntity {
 abstract class _MessageEntity extends MessageEntity {
   const factory _MessageEntity(
       {required final String type,
-      required final DeviceInfoEntity data}) = _$_MessageEntity;
+      required final dynamic data}) = _$_MessageEntity;
   const _MessageEntity._() : super._();
 
   factory _MessageEntity.fromJson(Map<String, dynamic> json) =
@@ -175,7 +163,7 @@ abstract class _MessageEntity extends MessageEntity {
   @override
   String get type;
   @override
-  DeviceInfoEntity get data;
+  dynamic get data;
   @override
   @JsonKey(ignore: true)
   _$$_MessageEntityCopyWith<_$_MessageEntity> get copyWith =>
