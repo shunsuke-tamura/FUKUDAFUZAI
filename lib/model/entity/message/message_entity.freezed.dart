@@ -20,7 +20,7 @@ MessageEntity _$MessageEntityFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$MessageEntity {
-  String get type => throw _privateConstructorUsedError;
+  String? get type => throw _privateConstructorUsedError;
   dynamic get data => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -35,7 +35,7 @@ abstract class $MessageEntityCopyWith<$Res> {
           MessageEntity value, $Res Function(MessageEntity) then) =
       _$MessageEntityCopyWithImpl<$Res, MessageEntity>;
   @useResult
-  $Res call({String type, dynamic data});
+  $Res call({String? type, dynamic data});
 }
 
 /// @nodoc
@@ -51,14 +51,14 @@ class _$MessageEntityCopyWithImpl<$Res, $Val extends MessageEntity>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? type = null,
+    Object? type = freezed,
     Object? data = freezed,
   }) {
     return _then(_value.copyWith(
-      type: null == type
+      type: freezed == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       data: freezed == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
@@ -75,7 +75,7 @@ abstract class _$$_MessageEntityCopyWith<$Res>
       __$$_MessageEntityCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String type, dynamic data});
+  $Res call({String? type, dynamic data});
 }
 
 /// @nodoc
@@ -89,14 +89,14 @@ class __$$_MessageEntityCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? type = null,
+    Object? type = freezed,
     Object? data = freezed,
   }) {
     return _then(_$_MessageEntity(
-      type: null == type
+      type: freezed == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       data: freezed == data
           ? _value.data
           : data // ignore: cast_nullable_to_non_nullable
@@ -114,7 +114,7 @@ class _$_MessageEntity extends _MessageEntity {
       _$$_MessageEntityFromJson(json);
 
   @override
-  final String type;
+  final String? type;
   @override
   final dynamic data;
 
@@ -153,7 +153,7 @@ class _$_MessageEntity extends _MessageEntity {
 
 abstract class _MessageEntity extends MessageEntity {
   const factory _MessageEntity(
-      {required final String type,
+      {required final String? type,
       required final dynamic data}) = _$_MessageEntity;
   const _MessageEntity._() : super._();
 
@@ -161,7 +161,7 @@ abstract class _MessageEntity extends MessageEntity {
       _$_MessageEntity.fromJson;
 
   @override
-  String get type;
+  String? get type;
   @override
   dynamic get data;
   @override

@@ -9,7 +9,7 @@ class MessageEntity with _$MessageEntity {
     const MessageEntity._();
 
   const factory MessageEntity({
-    required String type,
+    required String? type,
     required dynamic data,
   }) = _MessageEntity;
 

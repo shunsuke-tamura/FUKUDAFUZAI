@@ -8,7 +8,7 @@ part of 'message_entity.dart';
 
 _$_MessageEntity _$$_MessageEntityFromJson(Map<String, dynamic> json) =>
     _$_MessageEntity(
-      type: json['type'] as String,
+      type: json['type'] as String?,
       data: json['data'],
     );
 
