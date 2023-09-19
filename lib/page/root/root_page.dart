@@ -3,12 +3,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fukuda_fuzai/model/entity/sensor_per_info/sensor_per_info_entity.dart';
 import 'package:fukuda_fuzai/model/entity/shoot/shoot_entity.dart';
 import 'package:fukuda_fuzai/model/entity/user_setting/user_setting_entity.dart';
 import 'package:peerdart/peerdart.dart';
 import 'package:fukuda_fuzai/model/document/acc/acc_document.dart';
 import 'package:fukuda_fuzai/model/document/gyr/gyr_document.dart';
-import 'package:fukuda_fuzai/model/entity/device_info/device_info_entity.dart';
 import 'package:fukuda_fuzai/model/entity/message/message_entity.dart';
 import 'package:fukuda_fuzai/provider/presentation_provider.dart';
 import 'package:fukuda_fuzai/util/constant/color_constant.dart';
@@ -116,6 +116,8 @@ class _RootPageState extends ConsumerState<RootPage> {
       options: PeerConnectOption(serialization: SerializationType.JSON),
     );
     conn = connection;
+    print('コネクト');
+    print(connection);
 
     sendUserSetting();
 
@@ -165,7 +167,7 @@ class _RootPageState extends ConsumerState<RootPage> {
     final zPercent = zRoute / maxZ;
     final accDoc = AccDocument(x: acc.x, y: acc.y, z: acc.z);
     final gyrDoc = GyrDocument(x: xPercent, y: gyr.y, z: zPercent);
-    final deviceInfo = DeviceInfoEntity(acc: accDoc, gyro: gyrDoc);
+    final deviceInfo = SensorPerInfoEntity(acc: accDoc, gyro: gyrDoc);
     final message = MessageEntity(type: 'sensorInfo', data: deviceInfo);
     final json = message.toJson();
     final List<int> codeUnits = jsonEncode(json).codeUnits;
@@ -174,8 +176,16 @@ class _RootPageState extends ConsumerState<RootPage> {
   }
 
   void shoot() {
-    const shoot = ShootEntity(action: 'shoot');
-    const message = MessageEntity(type: 'shoot', data: shoot);
+    final xRoute = ref.read(xRouteProvider);
+    final zRoute = ref.read(zRouteProvider);
+    final xPercent = xRoute / maxX;
+    final zPercent = zRoute / maxZ;
+    final shoot = ShootEntity(
+        sensorPerInfo: SensorPerInfoEntity(
+      acc: AccDocument(x: acc.x, y: acc.y, z: acc.z),
+      gyro: GyrDocument(x: xPercent, y: gyr.y, z: zPercent),
+    ));
+    final message = MessageEntity(type: 'shoot', data: shoot);
     final json = message.toJson();
     final List<int> codeUnits = jsonEncode(json).codeUnits;
     final Uint8List unit8List = Uint8List.fromList(codeUnits);
@@ -205,9 +215,7 @@ class _RootPageState extends ConsumerState<RootPage> {
             } else if (minZ == 1.0) {
               minZ = ref.read(zRouteProvider);
             }
-            setState(() {
-
-            });
+            setState(() {});
           },
         ),
         body: Center(
