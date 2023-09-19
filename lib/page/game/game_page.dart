@@ -16,14 +16,14 @@ import 'package:fukuda_fuzai/util/constant/color_constant.dart';
 import 'package:fukuda_fuzai/util/constant/text_style_constant.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
-class RootPage extends ConsumerStatefulWidget {
-  const RootPage({Key? key}) : super(key: key);
+class GamePage extends ConsumerStatefulWidget {
+  const GamePage({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<RootPage> createState() => _RootPageState();
+  ConsumerState<GamePage> createState() => _RootPageState();
 }
 
-class _RootPageState extends ConsumerState<RootPage> {
+class _RootPageState extends ConsumerState<GamePage> {
   AccelerometerEvent acc = AccelerometerEvent(0, 0, 0);
   GyroscopeEvent gyr = GyroscopeEvent(0, 0, 0);
   Peer peer = Peer(options: PeerOptions(debug: LogLevel.All));

@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fukuda_fuzai/page/game/game_page.dart';
 import 'package:fukuda_fuzai/page/qr/qr_page.dart';
-import 'package:fukuda_fuzai/page/title.dart';
+import 'package:fukuda_fuzai/page/title/title_page.dart';
 import 'package:go_router/go_router.dart';
-import 'package:fukuda_fuzai/page/root/root_page.dart';
 
 /// ページ遷移のプロバイダ
 final routerProvider = Provider<GoRouter>(
@@ -18,7 +18,7 @@ final routerProvider = Provider<GoRouter>(
           ),
           GoRoute(
             path: 'root',
-            builder: (context, state) => const RootPage(),
+            builder: (context, state) => const GamePage(),
           ),
         ],
       ),
