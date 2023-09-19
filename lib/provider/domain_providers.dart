@@ -7,6 +7,10 @@ import 'package:go_router/go_router.dart';
 
 final audioProvider = Provider((_) => AudioPlayer());
 
+final audioCacheProvider = Provider((_) => AudioCache());
+
+final firingSoundProvider = StateProvider((ref) => '');
+
 /// ページ遷移のプロバイダ
 final routerProvider = Provider<GoRouter>(
   (ref) => GoRouter(

@@ -18,6 +18,11 @@ class MyApp extends ConsumerStatefulWidget {
 class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
+    Future(() async {
+      final cache = ref.read(audioCacheProvider);
+      final path = await cache.load("audios/firing.mp3");
+      ref.read(firingSoundProvider.notifier).update((state) => path.path);
+    });
     super.initState();
   }
   @override
