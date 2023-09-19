@@ -20,7 +20,7 @@ ShootEntity _$ShootEntityFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ShootEntity {
-  String get action => throw _privateConstructorUsedError;
+  SensorPerInfoEntity get sensorPerInfo => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -34,7 +34,9 @@ abstract class $ShootEntityCopyWith<$Res> {
           ShootEntity value, $Res Function(ShootEntity) then) =
       _$ShootEntityCopyWithImpl<$Res, ShootEntity>;
   @useResult
-  $Res call({String action});
+  $Res call({SensorPerInfoEntity sensorPerInfo});
+
+  $SensorPerInfoEntityCopyWith<$Res> get sensorPerInfo;
 }
 
 /// @nodoc
@@ -50,14 +52,22 @@ class _$ShootEntityCopyWithImpl<$Res, $Val extends ShootEntity>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? action = null,
+    Object? sensorPerInfo = null,
   }) {
     return _then(_value.copyWith(
-      action: null == action
-          ? _value.action
-          : action // ignore: cast_nullable_to_non_nullable
-              as String,
+      sensorPerInfo: null == sensorPerInfo
+          ? _value.sensorPerInfo
+          : sensorPerInfo // ignore: cast_nullable_to_non_nullable
+              as SensorPerInfoEntity,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $SensorPerInfoEntityCopyWith<$Res> get sensorPerInfo {
+    return $SensorPerInfoEntityCopyWith<$Res>(_value.sensorPerInfo, (value) {
+      return _then(_value.copyWith(sensorPerInfo: value) as $Val);
+    });
   }
 }
 
@@ -69,7 +79,10 @@ abstract class _$$_ShootEntityCopyWith<$Res>
       __$$_ShootEntityCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String action});
+  $Res call({SensorPerInfoEntity sensorPerInfo});
+
+  @override
+  $SensorPerInfoEntityCopyWith<$Res> get sensorPerInfo;
 }
 
 /// @nodoc
@@ -83,13 +96,13 @@ class __$$_ShootEntityCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? action = null,
+    Object? sensorPerInfo = null,
   }) {
     return _then(_$_ShootEntity(
-      action: null == action
-          ? _value.action
-          : action // ignore: cast_nullable_to_non_nullable
-              as String,
+      sensorPerInfo: null == sensorPerInfo
+          ? _value.sensorPerInfo
+          : sensorPerInfo // ignore: cast_nullable_to_non_nullable
+              as SensorPerInfoEntity,
     ));
   }
 }
@@ -97,17 +110,17 @@ class __$$_ShootEntityCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_ShootEntity extends _ShootEntity {
-  const _$_ShootEntity({required this.action}) : super._();
+  const _$_ShootEntity({required this.sensorPerInfo}) : super._();
 
   factory _$_ShootEntity.fromJson(Map<String, dynamic> json) =>
       _$$_ShootEntityFromJson(json);
 
   @override
-  final String action;
+  final SensorPerInfoEntity sensorPerInfo;
 
   @override
   String toString() {
-    return 'ShootEntity(action: $action)';
+    return 'ShootEntity(sensorPerInfo: $sensorPerInfo)';
   }
 
   @override
@@ -115,12 +128,13 @@ class _$_ShootEntity extends _ShootEntity {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ShootEntity &&
-            (identical(other.action, action) || other.action == action));
+            (identical(other.sensorPerInfo, sensorPerInfo) ||
+                other.sensorPerInfo == sensorPerInfo));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, action);
+  int get hashCode => Object.hash(runtimeType, sensorPerInfo);
 
   @JsonKey(ignore: true)
   @override
@@ -137,14 +151,15 @@ class _$_ShootEntity extends _ShootEntity {
 }
 
 abstract class _ShootEntity extends ShootEntity {
-  const factory _ShootEntity({required final String action}) = _$_ShootEntity;
+  const factory _ShootEntity(
+      {required final SensorPerInfoEntity sensorPerInfo}) = _$_ShootEntity;
   const _ShootEntity._() : super._();
 
   factory _ShootEntity.fromJson(Map<String, dynamic> json) =
       _$_ShootEntity.fromJson;
 
   @override
-  String get action;
+  SensorPerInfoEntity get sensorPerInfo;
   @override
   @JsonKey(ignore: true)
   _$$_ShootEntityCopyWith<_$_ShootEntity> get copyWith =>

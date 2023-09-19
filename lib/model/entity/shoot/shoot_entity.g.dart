@@ -8,10 +8,11 @@ part of 'shoot_entity.dart';
 
 _$_ShootEntity _$$_ShootEntityFromJson(Map<String, dynamic> json) =>
     _$_ShootEntity(
-      action: json['action'] as String,
+      sensorPerInfo: SensorPerInfoEntity.fromJson(
+          json['sensorPerInfo'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$_ShootEntityToJson(_$_ShootEntity instance) =>
     <String, dynamic>{
-      'action': instance.action,
+      'sensorPerInfo': instance.sensorPerInfo,
     };

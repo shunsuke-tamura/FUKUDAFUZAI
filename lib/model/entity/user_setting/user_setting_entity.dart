@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:fukuda_fuzai/model/entity/device_info/device_info_entity.dart';
 
 part 'user_setting_entity.freezed.dart';
 part 'user_setting_entity.g.dart';
