@@ -10,6 +10,7 @@ import 'package:fukuda_fuzai/model/entity/shoot/shoot_entity.dart';
 import 'package:fukuda_fuzai/model/entity/user_setting/user_setting_entity.dart';
 import 'package:fukuda_fuzai/util/constant/color_constant.dart';
 import 'package:fukuda_fuzai/util/constant/enum/message_type_enum.dart';
+import 'package:fukuda_fuzai/util/constant/text_style_constant.dart';
 import 'package:peerdart/peerdart.dart';
 import 'package:fukuda_fuzai/model/document/acc/acc_document.dart';
 import 'package:fukuda_fuzai/model/document/gyr/gyr_document.dart';
@@ -151,14 +152,14 @@ class _RootPageState extends ConsumerState<GamePage> {
 
         final message = MessageEntity.fromJson(jsonData);
         if (message.type == MessageTypeEnum.shootRes.name) {
-          final shootRes = message.data as ShootResponse;
+          final shootRes = ShootResponse.fromJson(message.data);
           ref
               .read(scoreProvider.notifier)
               .update((state) => state + (shootRes.score ?? 0));
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("score: ${ref.read(scoreProvider.notifier)}")));
         } else if (message.type == MessageTypeEnum.userSettingRes.name) {
-          final userSettingRes = message.data as UserSettingResponse;
+          final userSettingRes = UserSettingResponse.fromJson(message.data);
           ref
               .read(assignedIdProvider.notifier)
               .update((state) => userSettingRes.id);
@@ -234,50 +235,69 @@ class _RootPageState extends ConsumerState<GamePage> {
 
   @override
   Widget build(BuildContext context) {
+    final id = ref.watch(assignedIdProvider);
+    final score = ref.watch(scoreProvider);
     return Scaffold(
       backgroundColor: ColorConstant.black10,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Visibility(
-              visible: isVisibleLazer,
-              child: Image.asset('assets/images/lazer2.gif'),
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Visibility(
+                  visible: isVisibleLazer,
+                  child: Image.asset('assets/images/lazer2.gif'),
+                ),
+                GestureDetector(
+                  onTap: shoot,
+                  child: Image.asset(
+                    'assets/images/canone2.png',
+                    height: 300,
+                  ),
+                ),
+                // _renderState(),
+                // const Text(
+                //   'Connection ID:',
+                // ),
+                // SelectableText(peerId ?? ""),
+                // Text('gyr: $gyr'),
+                Slider(
+                  min: 1,
+                  max: 10,
+                  divisions: 9,
+                  value: 10 - maxX,
+                  onChanged: (value) {
+                    maxX = 10 - value;
+                    maxZ = (10 - value) * 1.3;
+                    setState(() {});
+                  },
+                ),
+                ElevatedButton(
+                    onPressed: gyroReset, child: const Text("gyro reset")),
+                SizedBox(height: 32,)
+                // ElevatedButton(
+                //     onPressed: closeConnection,
+                //     child: const Text("Close connection,")),
+                // ElevatedButton(
+                //     onPressed: reconnect, child: const Text("Re connect,")),
+              ],
             ),
-            GestureDetector(
-              onTap: shoot,
-              child: Image.asset(
-                'assets/images/canone2.png',
-                height: 300,
+          ),
+          Positioned(
+            top: 60,
+            child: SizedBox(
+              height: 40,
+              width: 80,
+              child: Column(
+                children: [
+                  Text('id: ${id}', style: TextStyleConstant.normal16,),
+                  Text('score: ${score}', style: TextStyleConstant.normal16,)
+                ],
               ),
             ),
-            // _renderState(),
-            // const Text(
-            //   'Connection ID:',
-            // ),
-            // SelectableText(peerId ?? ""),
-            // Text('gyr: $gyr'),
-            Slider(
-              min: 1,
-              max: 10,
-              divisions: 9,
-              value: 10 - maxX,
-              onChanged: (value) {
-                maxX = 10 - value;
-                maxZ = (10 - value) * 1.3;
-                setState(() {});
-              },
-            ),
-            ElevatedButton(
-                onPressed: gyroReset, child: const Text("gyro reset")),
-            SizedBox(height: 32,)
-            // ElevatedButton(
-            //     onPressed: closeConnection,
-            //     child: const Text("Close connection,")),
-            // ElevatedButton(
-            //     onPressed: reconnect, child: const Text("Re connect,")),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
