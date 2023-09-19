@@ -8,3 +8,5 @@ final qrCodeDataProvider = StateProvider((ref) => '');
 final xRouteProvider = StateProvider<double>((ref) => 0);
 
 final zRouteProvider = StateProvider<double>((ref) => 0);
+
+final scoreProvider = StateProvider<int>((ref) => 0);

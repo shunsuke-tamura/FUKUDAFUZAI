@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fukuda_fuzai/provider/domain_providers.dart';
 import 'package:fukuda_fuzai/util/constant/color_constant.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const ProviderScope(child: MyApp()));
@@ -15,7 +14,7 @@ class MyApp extends ConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-   final router = ref.watch(routerProvider);
+    final router = ref.watch(routerProvider);
     return MaterialApp.router(
       theme: ThemeData(
         primaryColor: ColorConstant.black100,
