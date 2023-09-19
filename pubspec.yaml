@@ -47,8 +47,14 @@ flutter:
   assets:
     - assets/images/
     - assets/fonts/
+    - assets/audios/
 
 flutter_native_splash:        # 追加
   image: "assets/splash.png"  # 追加
   color: "#ffffff"            # 追加
   fullscreen: true
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon.png"
