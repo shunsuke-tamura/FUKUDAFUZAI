@@ -179,9 +179,7 @@ class _RootPageState extends ConsumerState<RootPage> {
             } else if (minZ == 1.0) {
               minZ = ref.read(zRouteProvider);
             }
-            setState(() {
-
-            });
+            setState(() {});
           },
         ),
         body: Center(
