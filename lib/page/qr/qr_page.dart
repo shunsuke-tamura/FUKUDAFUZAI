@@ -36,7 +36,7 @@ class _QrPageState extends ConsumerState<QrPage> {
 
     if (result != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.go('/root');
+        context.go('/game', extra: result!.code);
       });
     }
     return Scaffold(
