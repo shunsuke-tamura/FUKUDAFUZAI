@@ -12,3 +12,5 @@ final xRouteProvider = StateProvider<double>((ref) => 0);
 final zRouteProvider = StateProvider<double>((ref) => 0);
 
 final scoreProvider = StateProvider<int>((ref) => 0);
+
+final assignedIdProvider = StateProvider((ref) => 404);
