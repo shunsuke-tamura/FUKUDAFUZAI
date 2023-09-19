@@ -144,8 +144,8 @@ class _RootPageState extends ConsumerState<RootPage> {
   void sendBinary() {
     final xRoute = ref.read(xRouteProvider);
     final zRoute = ref.read(zRouteProvider);
-    final xPercent = xRoute > 0 ? xRoute / maxX : xRoute / minX * -1;
-    final zPercent = zRoute > 0 ? zRoute / maxZ : zRoute / minZ * -1;
+    final xPercent = xRoute / maxX;
+    final zPercent = zRoute / maxZ;
     final accDoc = AccDocument(x: acc.x, y: acc.y, z: acc.z);
     final gyrDoc = GyrDocument(x: xPercent, y: gyr.y, z: zPercent);
     final deviceInfo = DeviceInfoEntity(acc: accDoc, gyro: gyrDoc);
@@ -193,6 +193,7 @@ class _RootPageState extends ConsumerState<RootPage> {
                 'Connection ID:',
               ),
               SelectableText(peerId ?? ""),
+              Text('gyr: $gyr'),
               Text('maxX: $maxX'),
               Text('minX: $minX'),
               Text('maxZ: $maxZ'),
