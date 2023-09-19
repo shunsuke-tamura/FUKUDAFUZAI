@@ -160,6 +160,11 @@ class _RootPageState extends ConsumerState<RootPage> {
     conn?.sendBinary(unit8List);
   }
 
+  void gyroReset() {
+    ref.read(xRouteProvider.notifier).update((state) => 0);
+    ref.read(zRouteProvider.notifier).update((state) => 0);
+  }
+
   void sendBinary() {
     final xRoute = ref.read(xRouteProvider);
     final zRoute = ref.read(zRouteProvider);
@@ -255,6 +260,8 @@ class _RootPageState extends ConsumerState<RootPage> {
               ElevatedButton(onPressed: connect, child: const Text("connect")),
               ElevatedButton(
                   onPressed: sendUserSetting, child: const Text("userSetting")),
+              ElevatedButton(
+                  onPressed: gyroReset, child: const Text("gyro reset")),
               ElevatedButton(onPressed: shoot, child: const Text('shoot')),
               ElevatedButton(
                   onPressed: sendBinary,
