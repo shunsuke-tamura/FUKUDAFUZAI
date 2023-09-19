@@ -241,6 +241,7 @@ class _RootPageState extends ConsumerState<RootPage> {
                     .copyWith(color: ColorConstant.black30),
               ),
               ElevatedButton(onPressed: connect, child: const Text("connect")),
+              ElevatedButton(onPressed: shoot, child: const Text('shoot')),
               ElevatedButton(
                   onPressed: sendBinary,
                   child: const Text("Send binary to peer")),
