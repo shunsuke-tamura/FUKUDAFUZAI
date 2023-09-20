@@ -11,6 +11,7 @@ class UserSettingResponse with _$UserSettingResponse {
   const factory UserSettingResponse({
     @JsonKey(name: 'id') required int id,
     @JsonKey(name: 'name') required String name,
+    @JsonKey(name: 'colorCode') required String colorCode,
   }) = _UserSettingResponse;
 
   factory UserSettingResponse.fromJson(Map<String, dynamic> json) =>

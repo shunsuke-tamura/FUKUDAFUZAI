@@ -8,7 +8,9 @@ class UserSettingEntity with _$UserSettingEntity {
     const UserSettingEntity._();
 
   const factory UserSettingEntity({
+    required int id,
     required String name,
+    required String colorCode,
   }) = _UserSettingEntity;
 
    factory UserSettingEntity.fromJson(Map<String, dynamic> json) =>

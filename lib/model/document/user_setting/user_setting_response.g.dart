@@ -11,6 +11,7 @@ _$_UserSettingResponse _$$_UserSettingResponseFromJson(
     _$_UserSettingResponse(
       id: json['id'] as int,
       name: json['name'] as String,
+      colorCode: json['colorCode'] as String,
     );
 
 Map<String, dynamic> _$$_UserSettingResponseToJson(
@@ -18,4 +19,5 @@ Map<String, dynamic> _$$_UserSettingResponseToJson(
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
+      'colorCode': instance.colorCode,
     };

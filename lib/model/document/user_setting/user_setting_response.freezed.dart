@@ -24,6 +24,8 @@ mixin _$UserSettingResponse {
   int get id => throw _privateConstructorUsedError;
   @JsonKey(name: 'name')
   String get name => throw _privateConstructorUsedError;
+  @JsonKey(name: 'colorCode')
+  String get colorCode => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -37,7 +39,10 @@ abstract class $UserSettingResponseCopyWith<$Res> {
           UserSettingResponse value, $Res Function(UserSettingResponse) then) =
       _$UserSettingResponseCopyWithImpl<$Res, UserSettingResponse>;
   @useResult
-  $Res call({@JsonKey(name: 'id') int id, @JsonKey(name: 'name') String name});
+  $Res call(
+      {@JsonKey(name: 'id') int id,
+      @JsonKey(name: 'name') String name,
+      @JsonKey(name: 'colorCode') String colorCode});
 }
 
 /// @nodoc
@@ -55,6 +60,7 @@ class _$UserSettingResponseCopyWithImpl<$Res, $Val extends UserSettingResponse>
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? colorCode = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -64,6 +70,10 @@ class _$UserSettingResponseCopyWithImpl<$Res, $Val extends UserSettingResponse>
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      colorCode: null == colorCode
+          ? _value.colorCode
+          : colorCode // ignore: cast_nullable_to_non_nullable
               as String,
     ) as $Val);
   }
@@ -77,7 +87,10 @@ abstract class _$$_UserSettingResponseCopyWith<$Res>
       __$$_UserSettingResponseCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({@JsonKey(name: 'id') int id, @JsonKey(name: 'name') String name});
+  $Res call(
+      {@JsonKey(name: 'id') int id,
+      @JsonKey(name: 'name') String name,
+      @JsonKey(name: 'colorCode') String colorCode});
 }
 
 /// @nodoc
@@ -93,6 +106,7 @@ class __$$_UserSettingResponseCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? colorCode = null,
   }) {
     return _then(_$_UserSettingResponse(
       id: null == id
@@ -103,6 +117,10 @@ class __$$_UserSettingResponseCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      colorCode: null == colorCode
+          ? _value.colorCode
+          : colorCode // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -112,7 +130,8 @@ class __$$_UserSettingResponseCopyWithImpl<$Res>
 class _$_UserSettingResponse extends _UserSettingResponse {
   const _$_UserSettingResponse(
       {@JsonKey(name: 'id') required this.id,
-      @JsonKey(name: 'name') required this.name})
+      @JsonKey(name: 'name') required this.name,
+      @JsonKey(name: 'colorCode') required this.colorCode})
       : super._();
 
   factory _$_UserSettingResponse.fromJson(Map<String, dynamic> json) =>
@@ -124,10 +143,13 @@ class _$_UserSettingResponse extends _UserSettingResponse {
   @override
   @JsonKey(name: 'name')
   final String name;
+  @override
+  @JsonKey(name: 'colorCode')
+  final String colorCode;
 
   @override
   String toString() {
-    return 'UserSettingResponse(id: $id, name: $name)';
+    return 'UserSettingResponse(id: $id, name: $name, colorCode: $colorCode)';
   }
 
   @override
@@ -136,12 +158,14 @@ class _$_UserSettingResponse extends _UserSettingResponse {
         (other.runtimeType == runtimeType &&
             other is _$_UserSettingResponse &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name));
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.colorCode, colorCode) ||
+                other.colorCode == colorCode));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name);
+  int get hashCode => Object.hash(runtimeType, id, name, colorCode);
 
   @JsonKey(ignore: true)
   @override
@@ -161,7 +185,8 @@ class _$_UserSettingResponse extends _UserSettingResponse {
 abstract class _UserSettingResponse extends UserSettingResponse {
   const factory _UserSettingResponse(
           {@JsonKey(name: 'id') required final int id,
-          @JsonKey(name: 'name') required final String name}) =
+          @JsonKey(name: 'name') required final String name,
+          @JsonKey(name: 'colorCode') required final String colorCode}) =
       _$_UserSettingResponse;
   const _UserSettingResponse._() : super._();
 
@@ -174,6 +199,9 @@ abstract class _UserSettingResponse extends UserSettingResponse {
   @override
   @JsonKey(name: 'name')
   String get name;
+  @override
+  @JsonKey(name: 'colorCode')
+  String get colorCode;
   @override
   @JsonKey(ignore: true)
   _$$_UserSettingResponseCopyWith<_$_UserSettingResponse> get copyWith =>

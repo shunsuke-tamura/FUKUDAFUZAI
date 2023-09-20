@@ -20,7 +20,9 @@ UserSettingEntity _$UserSettingEntityFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UserSettingEntity {
+  int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  String get colorCode => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -34,7 +36,7 @@ abstract class $UserSettingEntityCopyWith<$Res> {
           UserSettingEntity value, $Res Function(UserSettingEntity) then) =
       _$UserSettingEntityCopyWithImpl<$Res, UserSettingEntity>;
   @useResult
-  $Res call({String name});
+  $Res call({int id, String name, String colorCode});
 }
 
 /// @nodoc
@@ -50,12 +52,22 @@ class _$UserSettingEntityCopyWithImpl<$Res, $Val extends UserSettingEntity>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
+    Object? colorCode = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      colorCode: null == colorCode
+          ? _value.colorCode
+          : colorCode // ignore: cast_nullable_to_non_nullable
               as String,
     ) as $Val);
   }
@@ -69,7 +81,7 @@ abstract class _$$_UserSettingEntityCopyWith<$Res>
       __$$_UserSettingEntityCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String name});
+  $Res call({int id, String name, String colorCode});
 }
 
 /// @nodoc
@@ -83,12 +95,22 @@ class __$$_UserSettingEntityCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
+    Object? colorCode = null,
   }) {
     return _then(_$_UserSettingEntity(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      colorCode: null == colorCode
+          ? _value.colorCode
+          : colorCode // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -97,17 +119,23 @@ class __$$_UserSettingEntityCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_UserSettingEntity extends _UserSettingEntity {
-  const _$_UserSettingEntity({required this.name}) : super._();
+  const _$_UserSettingEntity(
+      {required this.id, required this.name, required this.colorCode})
+      : super._();
 
   factory _$_UserSettingEntity.fromJson(Map<String, dynamic> json) =>
       _$$_UserSettingEntityFromJson(json);
 
   @override
+  final int id;
+  @override
   final String name;
+  @override
+  final String colorCode;
 
   @override
   String toString() {
-    return 'UserSettingEntity(name: $name)';
+    return 'UserSettingEntity(id: $id, name: $name, colorCode: $colorCode)';
   }
 
   @override
@@ -115,12 +143,15 @@ class _$_UserSettingEntity extends _UserSettingEntity {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_UserSettingEntity &&
-            (identical(other.name, name) || other.name == name));
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.colorCode, colorCode) ||
+                other.colorCode == colorCode));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, name);
+  int get hashCode => Object.hash(runtimeType, id, name, colorCode);
 
   @JsonKey(ignore: true)
   @override
@@ -138,15 +169,21 @@ class _$_UserSettingEntity extends _UserSettingEntity {
 }
 
 abstract class _UserSettingEntity extends UserSettingEntity {
-  const factory _UserSettingEntity({required final String name}) =
-      _$_UserSettingEntity;
+  const factory _UserSettingEntity(
+      {required final int id,
+      required final String name,
+      required final String colorCode}) = _$_UserSettingEntity;
   const _UserSettingEntity._() : super._();
 
   factory _UserSettingEntity.fromJson(Map<String, dynamic> json) =
       _$_UserSettingEntity.fromJson;
 
   @override
+  int get id;
+  @override
   String get name;
+  @override
+  String get colorCode;
   @override
   @JsonKey(ignore: true)
   _$$_UserSettingEntityCopyWith<_$_UserSettingEntity> get copyWith =>
