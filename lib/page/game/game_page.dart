@@ -118,8 +118,9 @@ class _RootPageState extends ConsumerState<GamePage> {
   }
 
   void sendUserSetting() {
-    const userSetting = UserSettingEntity(id: 0, name: 'フクダ', colorCode: '');
-    const message = MessageEntity(type: 'userSetting', data: userSetting);
+    final name = ref.read(nameTextFieldController);
+    final userSetting = UserSettingEntity(id: 0, name: name.text, colorCode: '');
+    final message = MessageEntity(type: 'userSetting', data: userSetting);
     final json = message.toJson();
     final List<int> codeUnits = jsonEncode(json).codeUnits;
     final Uint8List unit8List = Uint8List.fromList(codeUnits);
