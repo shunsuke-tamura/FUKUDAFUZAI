@@ -11,38 +11,56 @@ class TitlePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(nameTextFieldController);
-    return Scaffold(
+    return const Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('名前を入力して'),
-          TextFormField(
-            controller: controller,
-            textAlign: TextAlign.left,
-            autofocus: true,
-            cursorColor: ColorConstant.black30,
-            decoration: const InputDecoration(
-              fillColor: ColorConstant.black90,
-              filled: true,
-              hintText: 'メッセージを入力',
-              hintStyle: TextStyle(fontSize: 16, color: ColorConstant.black50),
-              floatingLabelBehavior: FloatingLabelBehavior.never,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(4)),
-                borderSide: BorderSide.none,
-              ),
-            ),
-            style: TextStyleConstant.normal16
-                .copyWith(color: ColorConstant.black30),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              context.push('/qr');
-            },
-            child: Text('qrコードを読み取る'),
-          ),
+          FormWidget(),
         ],
       ),
     );
   }
 }
+
+final _formKey = GlobalKey<FormState>();
+
+class FormWidget extends StatelessWidget {
+  const FormWidget({Key? key}) : super(key: key);
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextFormField(
+              decoration: InputDecoration(labelText: 'Enter alphabet only'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+                  return 'Please enter only alphabet characters';
+                }
+                return null;
+              },
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                context.push('/qr');
+              }
+            },
+            child: const Text('qrコードを読み取る'),
+          )
+        ],
+      ),
+    );
+  }
+}
+
