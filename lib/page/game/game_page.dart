@@ -150,8 +150,6 @@ class _RootPageState extends ConsumerState<GamePage> {
         String strData = utf8.decode(map.values.map((e) => e as int).toList());
         Map<String, dynamic> jsonData = jsonDecode(strData);
         print(jsonData);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Got binary!")));
 
         final message = MessageEntity.fromJson(jsonData);
         if (message.type == MessageTypeEnum.shootRes.name) {
@@ -162,22 +160,17 @@ class _RootPageState extends ConsumerState<GamePage> {
           if (shootRes.score != null) {
             Vibration.vibrate();
           }
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("score: ${ref.read(scoreProvider.notifier)}")));
         } else if (message.type == MessageTypeEnum.userSettingRes.name) {
           final userSettingRes = UserSettingResponse.fromJson(message.data);
-          ref
-              .read(assignedIdProvider.notifier)
-              .update((state) => userSettingRes.id);
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("score: ${ref.read(scoreProvider.notifier)}")));
+          ref.read(userSettingProvider.notifier).update(
+              (state) => UserSettingEntity.fromJson(userSettingRes.toJson()));
         }
       });
     });
   }
 
   void sendUserSetting() {
-    const userSetting = UserSettingEntity(name: 'フクダ');
+    const userSetting = UserSettingEntity(id: 0, name: 'フクダ', colorCode: '');
     const message = MessageEntity(type: 'userSetting', data: userSetting);
     final json = message.toJson();
     final List<int> codeUnits = jsonEncode(json).codeUnits;
@@ -239,7 +232,7 @@ class _RootPageState extends ConsumerState<GamePage> {
 
   @override
   Widget build(BuildContext context) {
-    final id = ref.watch(assignedIdProvider);
+    final userSetting = ref.watch(userSettingProvider);
     final score = ref.watch(scoreProvider);
     return Scaffold(
       backgroundColor: ColorConstant.black100,
@@ -260,7 +253,10 @@ class _RootPageState extends ConsumerState<GamePage> {
                     height: isVisibleLazer ? 100 : 500,
                     child: SvgPicture.asset(
                       'assets/images/canone.svg',
-                      color: Colors.blueAccent,
+                      color: Color(int.parse(
+                        'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+                        radix: 16,
+                      )),
                       height: 300,
                     ),
                   ),
@@ -271,22 +267,51 @@ class _RootPageState extends ConsumerState<GamePage> {
                 // ),
                 // SelectableText(peerId ?? ""),
                 // Text('gyr: $gyr'),
-                Slider(
-                  min: 1,
-                  max: 10,
-                  divisions: 9,
-                  value: 10 - maxX,
-                  onChanged: (value) {
-                    maxX = 10 - value;
-                    maxZ = (10 - value) * 1.3;
-                    setState(() {});
-                  },
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    inactiveTickMarkColor:  Color(int.parse(
+                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+                      radix: 16,
+                    ))
+                  ),
+                  child: Slider(
+                    activeColor: Color(int.parse(
+                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+                      radix: 16,
+                    )),
+                    inactiveColor:  Color(int.parse(
+                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+                      radix: 16,
+                    )).withOpacity(0.3),
+                    thumbColor:  Color(int.parse(
+                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+                      radix: 16,
+                    )),
+                    secondaryActiveColor:  Color(int.parse(
+                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+                      radix: 16,
+                    )),
+
+                    min: 1,
+                    max: 10,
+                    divisions: 9,
+                    value: 10 - maxX,
+                    onChanged: (value) {
+                      maxX = 10 - value;
+                      maxZ = (10 - value) * 1.3;
+                      setState(() {});
+                    },
+                  ),
                 ),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:  Color(int.parse(
+                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+                      radix: 16,
+                    )),
+                  ),
                     onPressed: gyroReset, child: const Text("gyro reset")),
-                SizedBox(
-                  height: 32,
-                )
+                const SizedBox(height: 32)
                 // ElevatedButton(
                 //     onPressed: closeConnection,
                 //     child: const Text("Close connection,")),
@@ -303,12 +328,14 @@ class _RootPageState extends ConsumerState<GamePage> {
               child: Column(
                 children: [
                   Text(
-                    'id: ${id}',
-                    style: TextStyleConstant.normal16.copyWith(color: ColorConstant.black0),
+                    'id: ${userSetting?.id ?? 404}',
+                    style: TextStyleConstant.normal16
+                        .copyWith(color: ColorConstant.black0),
                   ),
                   Text(
-                    'score: ${score}',
-                    style: TextStyleConstant.normal16.copyWith(color: ColorConstant.black0),
+                    'score: $score',
+                    style: TextStyleConstant.normal16
+                        .copyWith(color: ColorConstant.black0),
                   )
                 ],
               ),
