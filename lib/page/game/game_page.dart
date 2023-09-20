@@ -39,7 +39,7 @@ class _RootPageState extends ConsumerState<GamePage> {
   bool connected = false;
   double maxX = 1;
   double maxZ = 1;
-  bool isVisibleLazer = false;
+  bool isVisibleLazer = true;
 
   @override
   void dispose() {
@@ -119,7 +119,8 @@ class _RootPageState extends ConsumerState<GamePage> {
 
   void sendUserSetting() {
     final name = ref.read(nameTextFieldController);
-    final userSetting = UserSettingEntity(id: 0, name: name.text, colorCode: '');
+    final userSetting =
+        UserSettingEntity(id: 0, name: name.text, colorCode: '');
     final message = MessageEntity(type: 'userSetting', data: userSetting);
     final json = message.toJson();
     final List<int> codeUnits = jsonEncode(json).codeUnits;
@@ -148,25 +149,25 @@ class _RootPageState extends ConsumerState<GamePage> {
   }
 
   void shoot() {
+    isVisibleLazer = true;
     final xRoute = ref.read(xRouteProvider);
     final zRoute = ref.read(zRouteProvider);
     final xPercent = xRoute / maxX;
     final zPercent = zRoute / maxZ;
     final shoot = ShootEntity(
-      id: ref.read(userSettingProvider)!.id,
+        id: ref.read(userSettingProvider)!.id,
         sensorPerInfo: SensorPerInfoEntity(
-      acc: AccDocument(x: acc.x, y: acc.y, z: acc.z),
-      gyro: GyrDocument(x: xPercent, y: gyr.y, z: zPercent),
-    ));
+          acc: AccDocument(x: acc.x, y: acc.y, z: acc.z),
+          gyro: GyrDocument(x: xPercent, y: gyr.y, z: zPercent),
+        ));
     final message = MessageEntity(type: 'shoot', data: shoot);
     final json = message.toJson();
     final List<int> codeUnits = jsonEncode(json).codeUnits;
     final Uint8List unit8List = Uint8List.fromList(codeUnits);
     conn?.sendBinary(unit8List);
-    HapticFeedback.vibrate();
-    isVisibleLazer = true;
+    HapticFeedback.heavyImpact();
     setState(() {});
-    Future.delayed(const Duration(milliseconds: 200), () {
+    Future.delayed(const Duration(milliseconds: 50), () {
       isVisibleLazer = false;
       setState(() {});
     });
@@ -182,97 +183,120 @@ class _RootPageState extends ConsumerState<GamePage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     final userSetting = ref.watch(userSettingProvider);
     final score = ref.watch(scoreProvider);
     return Scaffold(
       backgroundColor: ColorConstant.black100,
-      body: Stack(
-        children: [
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Visibility(
-                  visible: isVisibleLazer,
-                  child: Image.asset('assets/images/lazer2.gif'),
-                ),
-                GestureDetector(
-                  onTap: shoot,
-                  child: AnimatedContainer(
-                    duration: const Duration(seconds: 1),
-                    height: isVisibleLazer ? 100 : 500,
-                    child: SvgPicture.asset(
-                      'assets/images/canone.svg',
-                      color: Color(int.parse(
-                        'FF${userSetting?.colorCode ?? 'FFFFFF'}',
-                        radix: 16,
-                      )),
-                      height: 300,
-                    ),
-                  ),
-                ),
-                // _renderState(),
-                // SelectableText(peerId ?? ""),
-                // Text('gyr: $gyr'),
-                Platform.isIOS
-                    ? IosSlider(
-                        userSetting: userSetting,
-                        maxX: maxX,
-                        onTap: (value) {
-                          maxX = 100 - value;
-                          maxZ = (100 - value) * 1.3;
-                          setState(() {});
-                        },
-                      )
-                    : AndroidSlider(
-                        userSetting: userSetting,
-                        maxX: maxX,
-                        onTap: (value) {
-                          maxX = 10 - value;
-                          maxZ = (10 - value) * 1.3;
-                          setState(() {});
-                        },
-                      ),
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(int.parse(
-                        'FF${userSetting?.colorCode ?? 'FFFFFF'}',
-                        radix: 16,
-                      )),
-                    ),
-                    onPressed: gyroReset,
-                    child: const Text("gyro reset")),
-                const SizedBox(height: 32)
-                // ElevatedButton(
-                //     onPressed: closeConnection,
-                //     child: const Text("Close connection,")),
-                // ElevatedButton(
-                //     onPressed: reconnect, child: const Text("Re connect,")),
-              ],
-            ),
-          ),
-          Positioned(
-            top: 60,
-            child: SizedBox(
-              height: 40,
-              width: 80,
+      body: SizedBox(
+        height: height,
+        child: Stack(
+          children: [
+            Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    'id: ${userSetting?.id ?? 404}',
-                    style: TextStyleConstant.normal16
-                        .copyWith(color: ColorConstant.black0),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Visibility(
+                        visible: true,
+                        child: Container(
+                          height: height * 0.45,
+                          width: 200,
+                          child: Stack(
+                            alignment: Alignment.topCenter,
+                            children: [
+                              AnimatedPositioned(
+                                top: isVisibleLazer ? 0 : height * 0.60,
+                                child: Image.asset('assets/images/ball.png', height: 30,),
+                                duration: Duration(milliseconds: 50),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: shoot,
+                        child: AnimatedContainer(
+                          alignment: Alignment.topCenter,
+                          duration: const Duration(seconds: 1),
+                          height: isVisibleLazer ? 100 : height * 0.4,
+                          child: SvgPicture.asset(
+                            'assets/images/canone.svg',
+                            color: Color(int.parse(
+                              'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+                              radix: 16,
+                            )),
+                            height: 300,
+                          ),
+                        ),
+                      ),
+                      // _renderState(),
+                      // SelectableText(peerId ?? ""),
+                      // Text('gyr: $gyr'),
+                      // ElevatedButton(
+                      //     onPressed: closeConnection,
+                      //     child: const Text("Close connection,")),
+                      // ElevatedButton(
+                      //     onPressed: reconnect, child: const Text("Re connect,")),
+                    ],
                   ),
-                  Text(
-                    'score: $score',
-                    style: TextStyleConstant.normal16
-                        .copyWith(color: ColorConstant.black0),
+                  Platform.isIOS
+                      ? IosSlider(
+                    userSetting: userSetting,
+                    maxX: maxX,
+                    onTap: (value) {
+                      maxX = 100 - value;
+                      maxZ = (100 - value) * 1.3;
+                      setState(() {});
+                    },
                   )
+                      : AndroidSlider(
+                    userSetting: userSetting,
+                    maxX: maxX,
+                    onTap: (value) {
+                      maxX = 10 - value;
+                      maxZ = (10 - value) * 1.3;
+                      setState(() {});
+                    },
+                  ),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(int.parse(
+                          'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+                          radix: 16,
+                        )),
+                      ),
+                      onPressed: gyroReset,
+                      child: const Text("gyro reset")),
+                  const SizedBox(height: 32)
                 ],
               ),
             ),
-          )
-        ],
+            Positioned(
+              top: 60,
+              child: SizedBox(
+                height: 40,
+                width: 80,
+                child: Column(
+                  children: [
+                    Text(
+                      'id: ${userSetting?.id ?? 404}',
+                      style: TextStyleConstant.normal16
+                          .copyWith(color: ColorConstant.black0),
+                    ),
+                    Text(
+                      'score: $score',
+                      style: TextStyleConstant.normal16
+                          .copyWith(color: ColorConstant.black0),
+                    )
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -341,9 +365,9 @@ class AndroidSlider extends StatelessWidget {
 class IosSlider extends StatelessWidget {
   const IosSlider(
       {Key? key,
-        required this.userSetting,
-        required this.maxX,
-        required this.onTap})
+      required this.userSetting,
+      required this.maxX,
+      required this.onTap})
       : super(key: key);
   final UserSettingEntity? userSetting;
   final double maxX;
@@ -354,9 +378,9 @@ class IosSlider extends StatelessWidget {
     return SliderTheme(
       data: SliderTheme.of(context).copyWith(
           inactiveTickMarkColor: Color(int.parse(
-            'FF${userSetting?.colorCode ?? 'FFFFFF'}',
-            radix: 16,
-          ))),
+        'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+        radix: 16,
+      ))),
       child: Slider(
         activeColor: Color(int.parse(
           'FF${userSetting?.colorCode ?? 'FFFFFF'}',
