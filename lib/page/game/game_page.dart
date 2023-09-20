@@ -213,6 +213,42 @@ class _RootPageState extends ConsumerState<GamePage> {
                 // Text('gyr: $gyr'),
                 SliderTheme(
                   data: SliderTheme.of(context).copyWith(
+                      inactiveTickMarkColor:  Color(int.parse(
+                        'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+                        radix: 16,
+                      ))
+                  ),
+                  child: Slider(
+                    activeColor: Color(int.parse(
+                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+                      radix: 16,
+                    )),
+                    inactiveColor:  Color(int.parse(
+                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+                      radix: 16,
+                    )).withOpacity(0.3),
+                    thumbColor:  Color(int.parse(
+                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+                      radix: 16,
+                    )),
+                    secondaryActiveColor:  Color(int.parse(
+                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+                      radix: 16,
+                    )),
+
+                    min: 10,
+                    max: 100,
+                    divisions: 90,
+                    value: 100 - maxX,
+                    onChanged: (value) {
+                      maxX = 100 - value;
+                      maxZ = (100 - value) * 1.3;
+                      setState(() {});
+                    },
+                  ),
+                ),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
                     inactiveTickMarkColor:  Color(int.parse(
                       'FF${userSetting?.colorCode ?? 'FFFFFF'}',
                       radix: 16,

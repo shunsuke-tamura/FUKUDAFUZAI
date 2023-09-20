@@ -23,6 +23,11 @@ activate-fvm: ## activate_fvm
 .PHONY: clean
 clean: ## clean project
 	fvm flutter clean
+	fvm flutter pub get
+
+.PHONY: clean-up
+clean-up: ## clean project
+	fvm flutter clean
 	cd ios; rm -rf Podfile.lock Pods
 	fvm flutter pub get
 	make pod-install
