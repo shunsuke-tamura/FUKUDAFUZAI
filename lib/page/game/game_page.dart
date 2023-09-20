@@ -153,6 +153,7 @@ class _RootPageState extends ConsumerState<GamePage> {
     final xPercent = xRoute / maxX;
     final zPercent = zRoute / maxZ;
     final shoot = ShootEntity(
+      id: ref.read(userSettingProvider)!.id,
         sensorPerInfo: SensorPerInfoEntity(
       acc: AccDocument(x: acc.x, y: acc.y, z: acc.z),
       gyro: GyrDocument(x: xPercent, y: gyr.y, z: zPercent),

@@ -9,6 +9,7 @@ class ShootEntity with _$ShootEntity {
     const ShootEntity._();
 
   const factory ShootEntity({
+    required int id,
     required SensorPerInfoEntity sensorPerInfo,
   }) = _ShootEntity;
 
