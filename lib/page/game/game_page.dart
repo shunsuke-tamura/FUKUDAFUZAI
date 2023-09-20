@@ -229,7 +229,7 @@ class _RootPageState extends ConsumerState<GamePage> {
                                 top: isVisibleLazer ? 0 : height * 0.60,
                                 duration: const Duration(milliseconds: 50),
                                 child: isFirst
-                                    ? Text('大砲をタップして！')
+                                    ? Text('大砲をタップして！\n下のバーで感度が変わるよ！')
                                     : Image.asset(
                                         'assets/images/ball.png',
                                         height: 30,
