@@ -40,6 +40,8 @@ class _RootPageState extends ConsumerState<GamePage> {
   double maxX = 1;
   double maxZ = 1;
   bool isVisibleLazer = true;
+  bool isLoading = true;
+  bool isFirst = true;
 
   @override
   void dispose() {
@@ -55,6 +57,8 @@ class _RootPageState extends ConsumerState<GamePage> {
     });
     Future.delayed(const Duration(seconds: 4), () {
       sendUserSetting();
+      isLoading = false;
+      setState(() {});
     });
 
     super.initState();
@@ -150,6 +154,7 @@ class _RootPageState extends ConsumerState<GamePage> {
 
   void shoot() {
     isVisibleLazer = true;
+    isFirst = false;
     final xRoute = ref.read(xRouteProvider);
     final zRoute = ref.read(zRouteProvider);
     final xPercent = xRoute / maxX;
@@ -183,6 +188,19 @@ class _RootPageState extends ConsumerState<GamePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading == true) {
+      return const Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('しばらくお待ち下さい'),
+              CircularProgressIndicator(),
+            ],
+          ),
+        ),
+      );
+    }
     final height = MediaQuery.of(context).size.height;
     final userSetting = ref.watch(userSettingProvider);
     final score = ref.watch(scoreProvider);
@@ -209,8 +227,13 @@ class _RootPageState extends ConsumerState<GamePage> {
                             children: [
                               AnimatedPositioned(
                                 top: isVisibleLazer ? 0 : height * 0.60,
-                                child: Image.asset('assets/images/ball.png', height: 30,),
-                                duration: Duration(milliseconds: 50),
+                                duration: const Duration(milliseconds: 50),
+                                child: isFirst
+                                    ? Text('大砲をタップして！')
+                                    : Image.asset(
+                                        'assets/images/ball.png',
+                                        height: 30,
+                                      ),
                               )
                             ],
                           ),
@@ -244,23 +267,23 @@ class _RootPageState extends ConsumerState<GamePage> {
                   ),
                   Platform.isIOS
                       ? IosSlider(
-                    userSetting: userSetting,
-                    maxX: maxX,
-                    onTap: (value) {
-                      maxX = 100 - value;
-                      maxZ = (100 - value) * 1.3;
-                      setState(() {});
-                    },
-                  )
+                          userSetting: userSetting,
+                          maxX: maxX,
+                          onTap: (value) {
+                            maxX = 100 - value;
+                            maxZ = (100 - value) * 1.3;
+                            setState(() {});
+                          },
+                        )
                       : AndroidSlider(
-                    userSetting: userSetting,
-                    maxX: maxX,
-                    onTap: (value) {
-                      maxX = 10 - value;
-                      maxZ = (10 - value) * 1.3;
-                      setState(() {});
-                    },
-                  ),
+                          userSetting: userSetting,
+                          maxX: maxX,
+                          onTap: (value) {
+                            maxX = 10 - value;
+                            maxZ = (10 - value) * 1.3;
+                            setState(() {});
+                          },
+                        ),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(int.parse(
