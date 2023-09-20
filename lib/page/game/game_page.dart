@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,32 +49,19 @@ class _RootPageState extends ConsumerState<GamePage> {
 
   @override
   void initState() {
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 1), () {
       connect(widget.id);
     });
-    Future.delayed(Duration(seconds: 4), () {
+    Future.delayed(const Duration(seconds: 4), () {
       sendUserSetting();
     });
 
     super.initState();
 
-    accelerometerEvents.listen(
-      (AccelerometerEvent event) {
-        acc = event;
-        sendBinary();
-      },
-      onError: (error) {
-        // Logic to handle error
-        // Needed for Android in case sensor is not available
-      },
-      cancelOnError: true,
-    );
-
     gyroscopeEvents.listen(
       (GyroscopeEvent event) {
         gyr = event;
         sendBinary();
-        // print(event);
         ref.read(xRouteProvider.notifier).update((state) => state + event.x);
         ref.read(zRouteProvider.notifier).update((state) => state + event.z);
       },
@@ -85,37 +71,6 @@ class _RootPageState extends ConsumerState<GamePage> {
       },
       cancelOnError: true,
     );
-
-    peer.on("open").listen((id) {
-      setState(() {
-        peerId = peer.id;
-      });
-    });
-
-    peer.on("close").listen((id) {
-      setState(() {
-        connected = false;
-      });
-    });
-
-    peer.on<DataConnection>("connection").listen((event) {
-      conn = event;
-
-      conn!.on("data").listen((data) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(data)));
-      });
-
-      conn!.on("close").listen((event) {
-        setState(() {
-          connected = false;
-        });
-      });
-
-      setState(() {
-        connected = true;
-      });
-    });
   }
 
   void connect(String id) {
@@ -124,7 +79,6 @@ class _RootPageState extends ConsumerState<GamePage> {
       options: PeerConnectOption(serialization: SerializationType.JSON),
     );
     conn = connection;
-    print('コネクト');
 
     conn!.on("open").listen((event) {
       setState(() {
@@ -137,19 +91,12 @@ class _RootPageState extends ConsumerState<GamePage> {
         });
       });
 
-      conn!.on("data").listen((data) {
-        print('data');
-        print(data);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(data)));
-      });
       conn!.on("binary").listen((data) {
         print('binary');
         String result = String.fromCharCodes(data);
         Map<dynamic, dynamic> map = jsonDecode(result);
         String strData = utf8.decode(map.values.map((e) => e as int).toList());
         Map<String, dynamic> jsonData = jsonDecode(strData);
-        print(jsonData);
 
         final message = MessageEntity.fromJson(jsonData);
         if (message.type == MessageTypeEnum.shootRes.name) {
@@ -216,7 +163,7 @@ class _RootPageState extends ConsumerState<GamePage> {
     HapticFeedback.vibrate();
     isVisibleLazer = true;
     setState(() {});
-    Future.delayed(Duration(milliseconds: 200), () {
+    Future.delayed(const Duration(milliseconds: 200), () {
       isVisibleLazer = false;
       setState(() {});
     });
@@ -262,9 +209,6 @@ class _RootPageState extends ConsumerState<GamePage> {
                   ),
                 ),
                 // _renderState(),
-                // const Text(
-                //   'Connection ID:',
-                // ),
                 // SelectableText(peerId ?? ""),
                 // Text('gyr: $gyr'),
                 SliderTheme(
