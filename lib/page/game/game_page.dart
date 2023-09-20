@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fukuda_fuzai/model/document/shoot/shoot_response.dart';
 import 'package:fukuda_fuzai/model/document/user_setting/user_setting_response.dart';
 import 'package:fukuda_fuzai/model/entity/sensor_per_info/sensor_per_info_entity.dart';
@@ -17,6 +19,7 @@ import 'package:fukuda_fuzai/model/document/gyr/gyr_document.dart';
 import 'package:fukuda_fuzai/model/entity/message/message_entity.dart';
 import 'package:fukuda_fuzai/provider/presentation_provider.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:vibration/vibration.dart';
 
 class GamePage extends ConsumerStatefulWidget {
   const GamePage(this.id, {Key? key}) : super(key: key);
@@ -156,6 +159,9 @@ class _RootPageState extends ConsumerState<GamePage> {
           ref
               .read(scoreProvider.notifier)
               .update((state) => state + (shootRes.score ?? 0));
+          if (shootRes.score != null) {
+            Vibration.vibrate();
+          }
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("score: ${ref.read(scoreProvider.notifier)}")));
         } else if (message.type == MessageTypeEnum.userSettingRes.name) {
@@ -214,15 +220,13 @@ class _RootPageState extends ConsumerState<GamePage> {
     final List<int> codeUnits = jsonEncode(json).codeUnits;
     final Uint8List unit8List = Uint8List.fromList(codeUnits);
     conn?.sendBinary(unit8List);
+    HapticFeedback.vibrate();
     isVisibleLazer = true;
     setState(() {});
     Future.delayed(Duration(milliseconds: 200), () {
       isVisibleLazer = false;
-      setState(() {
-
-      });
+      setState(() {});
     });
-
   }
 
   void closeConnection() {
@@ -238,7 +242,7 @@ class _RootPageState extends ConsumerState<GamePage> {
     final id = ref.watch(assignedIdProvider);
     final score = ref.watch(scoreProvider);
     return Scaffold(
-      backgroundColor: ColorConstant.black10,
+      backgroundColor: ColorConstant.black100,
       body: Stack(
         children: [
           Center(
@@ -251,9 +255,14 @@ class _RootPageState extends ConsumerState<GamePage> {
                 ),
                 GestureDetector(
                   onTap: shoot,
-                  child: Image.asset(
-                    'assets/images/canone2.png',
-                    height: 300,
+                  child: AnimatedContainer(
+                    duration: const Duration(seconds: 1),
+                    height: isVisibleLazer ? 100 : 500,
+                    child: SvgPicture.asset(
+                      'assets/images/canone.svg',
+                      color: Colors.blueAccent,
+                      height: 300,
+                    ),
                   ),
                 ),
                 // _renderState(),
@@ -275,7 +284,9 @@ class _RootPageState extends ConsumerState<GamePage> {
                 ),
                 ElevatedButton(
                     onPressed: gyroReset, child: const Text("gyro reset")),
-                SizedBox(height: 32,)
+                SizedBox(
+                  height: 32,
+                )
                 // ElevatedButton(
                 //     onPressed: closeConnection,
                 //     child: const Text("Close connection,")),
@@ -291,8 +302,14 @@ class _RootPageState extends ConsumerState<GamePage> {
               width: 80,
               child: Column(
                 children: [
-                  Text('id: ${id}', style: TextStyleConstant.normal16,),
-                  Text('score: ${score}', style: TextStyleConstant.normal16,)
+                  Text(
+                    'id: ${id}',
+                    style: TextStyleConstant.normal16.copyWith(color: ColorConstant.black0),
+                  ),
+                  Text(
+                    'score: ${score}',
+                    style: TextStyleConstant.normal16.copyWith(color: ColorConstant.black0),
+                  )
                 ],
               ),
             ),
