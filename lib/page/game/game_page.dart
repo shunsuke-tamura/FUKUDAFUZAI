@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -211,86 +212,34 @@ class _RootPageState extends ConsumerState<GamePage> {
                 // _renderState(),
                 // SelectableText(peerId ?? ""),
                 // Text('gyr: $gyr'),
-                SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                      inactiveTickMarkColor:  Color(int.parse(
+                Platform.isIOS
+                    ? IosSlider(
+                        userSetting: userSetting,
+                        maxX: maxX,
+                        onTap: (value) {
+                          maxX = 100 - value;
+                          maxZ = (100 - value) * 1.3;
+                          setState(() {});
+                        },
+                      )
+                    : AndroidSlider(
+                        userSetting: userSetting,
+                        maxX: maxX,
+                        onTap: (value) {
+                          maxX = 10 - value;
+                          maxZ = (10 - value) * 1.3;
+                          setState(() {});
+                        },
+                      ),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(int.parse(
                         'FF${userSetting?.colorCode ?? 'FFFFFF'}',
                         radix: 16,
-                      ))
-                  ),
-                  child: Slider(
-                    activeColor: Color(int.parse(
-                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
-                      radix: 16,
-                    )),
-                    inactiveColor:  Color(int.parse(
-                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
-                      radix: 16,
-                    )).withOpacity(0.3),
-                    thumbColor:  Color(int.parse(
-                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
-                      radix: 16,
-                    )),
-                    secondaryActiveColor:  Color(int.parse(
-                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
-                      radix: 16,
-                    )),
-
-                    min: 10,
-                    max: 100,
-                    divisions: 90,
-                    value: 100 - maxX,
-                    onChanged: (value) {
-                      maxX = 100 - value;
-                      maxZ = (100 - value) * 1.3;
-                      setState(() {});
-                    },
-                  ),
-                ),
-                SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    inactiveTickMarkColor:  Color(int.parse(
-                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
-                      radix: 16,
-                    ))
-                  ),
-                  child: Slider(
-                    activeColor: Color(int.parse(
-                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
-                      radix: 16,
-                    )),
-                    inactiveColor:  Color(int.parse(
-                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
-                      radix: 16,
-                    )).withOpacity(0.3),
-                    thumbColor:  Color(int.parse(
-                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
-                      radix: 16,
-                    )),
-                    secondaryActiveColor:  Color(int.parse(
-                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
-                      radix: 16,
-                    )),
-
-                    min: 1,
-                    max: 10,
-                    divisions: 9,
-                    value: 10 - maxX,
-                    onChanged: (value) {
-                      maxX = 10 - value;
-                      maxZ = (10 - value) * 1.3;
-                      setState(() {});
-                    },
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:  Color(int.parse(
-                      'FF${userSetting?.colorCode ?? 'FFFFFF'}',
-                      radix: 16,
-                    )),
-                  ),
-                    onPressed: gyroReset, child: const Text("gyro reset")),
+                      )),
+                    ),
+                    onPressed: gyroReset,
+                    child: const Text("gyro reset")),
                 const SizedBox(height: 32)
                 // ElevatedButton(
                 //     onPressed: closeConnection,
@@ -336,6 +285,98 @@ class _RootPageState extends ConsumerState<GamePage> {
         txt,
         style:
             Theme.of(context).textTheme.titleLarge?.copyWith(color: txtColor),
+      ),
+    );
+  }
+}
+
+class AndroidSlider extends StatelessWidget {
+  const AndroidSlider(
+      {Key? key,
+      required this.userSetting,
+      required this.maxX,
+      required this.onTap})
+      : super(key: key);
+  final UserSettingEntity? userSetting;
+  final double maxX;
+  final void Function(double value) onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliderTheme(
+      data: SliderTheme.of(context).copyWith(
+          inactiveTickMarkColor: Color(int.parse(
+        'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+        radix: 16,
+      ))),
+      child: Slider(
+        activeColor: Color(int.parse(
+          'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+          radix: 16,
+        )),
+        inactiveColor: Color(int.parse(
+          'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+          radix: 16,
+        )).withOpacity(0.3),
+        thumbColor: Color(int.parse(
+          'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+          radix: 16,
+        )),
+        secondaryActiveColor: Color(int.parse(
+          'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+          radix: 16,
+        )),
+        min: 1,
+        max: 10,
+        divisions: 9,
+        value: 10 - maxX,
+        onChanged: onTap,
+      ),
+    );
+  }
+}
+
+class IosSlider extends StatelessWidget {
+  const IosSlider(
+      {Key? key,
+        required this.userSetting,
+        required this.maxX,
+        required this.onTap})
+      : super(key: key);
+  final UserSettingEntity? userSetting;
+  final double maxX;
+  final void Function(double value) onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliderTheme(
+      data: SliderTheme.of(context).copyWith(
+          inactiveTickMarkColor: Color(int.parse(
+            'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+            radix: 16,
+          ))),
+      child: Slider(
+        activeColor: Color(int.parse(
+          'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+          radix: 16,
+        )),
+        inactiveColor: Color(int.parse(
+          'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+          radix: 16,
+        )).withOpacity(0.3),
+        thumbColor: Color(int.parse(
+          'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+          radix: 16,
+        )),
+        secondaryActiveColor: Color(int.parse(
+          'FF${userSetting?.colorCode ?? 'FFFFFF'}',
+          radix: 16,
+        )),
+        min: 10,
+        max: 100,
+        divisions: 9,
+        value: 100 - maxX,
+        onChanged: onTap,
       ),
     );
   }
