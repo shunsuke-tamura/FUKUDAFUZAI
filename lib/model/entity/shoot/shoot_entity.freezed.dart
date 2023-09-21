@@ -21,6 +21,7 @@ ShootEntity _$ShootEntityFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ShootEntity {
   int get id => throw _privateConstructorUsedError;
+  double get charge => throw _privateConstructorUsedError;
   SensorPerInfoEntity get sensorPerInfo => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -35,7 +36,7 @@ abstract class $ShootEntityCopyWith<$Res> {
           ShootEntity value, $Res Function(ShootEntity) then) =
       _$ShootEntityCopyWithImpl<$Res, ShootEntity>;
   @useResult
-  $Res call({int id, SensorPerInfoEntity sensorPerInfo});
+  $Res call({int id, double charge, SensorPerInfoEntity sensorPerInfo});
 
   $SensorPerInfoEntityCopyWith<$Res> get sensorPerInfo;
 }
@@ -54,6 +55,7 @@ class _$ShootEntityCopyWithImpl<$Res, $Val extends ShootEntity>
   @override
   $Res call({
     Object? id = null,
+    Object? charge = null,
     Object? sensorPerInfo = null,
   }) {
     return _then(_value.copyWith(
@@ -61,6 +63,10 @@ class _$ShootEntityCopyWithImpl<$Res, $Val extends ShootEntity>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
+      charge: null == charge
+          ? _value.charge
+          : charge // ignore: cast_nullable_to_non_nullable
+              as double,
       sensorPerInfo: null == sensorPerInfo
           ? _value.sensorPerInfo
           : sensorPerInfo // ignore: cast_nullable_to_non_nullable
@@ -85,7 +91,7 @@ abstract class _$$_ShootEntityCopyWith<$Res>
       __$$_ShootEntityCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, SensorPerInfoEntity sensorPerInfo});
+  $Res call({int id, double charge, SensorPerInfoEntity sensorPerInfo});
 
   @override
   $SensorPerInfoEntityCopyWith<$Res> get sensorPerInfo;
@@ -103,6 +109,7 @@ class __$$_ShootEntityCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? charge = null,
     Object? sensorPerInfo = null,
   }) {
     return _then(_$_ShootEntity(
@@ -110,6 +117,10 @@ class __$$_ShootEntityCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
+      charge: null == charge
+          ? _value.charge
+          : charge // ignore: cast_nullable_to_non_nullable
+              as double,
       sensorPerInfo: null == sensorPerInfo
           ? _value.sensorPerInfo
           : sensorPerInfo // ignore: cast_nullable_to_non_nullable
@@ -121,7 +132,8 @@ class __$$_ShootEntityCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_ShootEntity extends _ShootEntity {
-  const _$_ShootEntity({required this.id, required this.sensorPerInfo})
+  const _$_ShootEntity(
+      {required this.id, required this.charge, required this.sensorPerInfo})
       : super._();
 
   factory _$_ShootEntity.fromJson(Map<String, dynamic> json) =>
@@ -130,11 +142,13 @@ class _$_ShootEntity extends _ShootEntity {
   @override
   final int id;
   @override
+  final double charge;
+  @override
   final SensorPerInfoEntity sensorPerInfo;
 
   @override
   String toString() {
-    return 'ShootEntity(id: $id, sensorPerInfo: $sensorPerInfo)';
+    return 'ShootEntity(id: $id, charge: $charge, sensorPerInfo: $sensorPerInfo)';
   }
 
   @override
@@ -143,13 +157,14 @@ class _$_ShootEntity extends _ShootEntity {
         (other.runtimeType == runtimeType &&
             other is _$_ShootEntity &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.charge, charge) || other.charge == charge) &&
             (identical(other.sensorPerInfo, sensorPerInfo) ||
                 other.sensorPerInfo == sensorPerInfo));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, sensorPerInfo);
+  int get hashCode => Object.hash(runtimeType, id, charge, sensorPerInfo);
 
   @JsonKey(ignore: true)
   @override
@@ -168,6 +183,7 @@ class _$_ShootEntity extends _ShootEntity {
 abstract class _ShootEntity extends ShootEntity {
   const factory _ShootEntity(
       {required final int id,
+      required final double charge,
       required final SensorPerInfoEntity sensorPerInfo}) = _$_ShootEntity;
   const _ShootEntity._() : super._();
 
@@ -176,6 +192,8 @@ abstract class _ShootEntity extends ShootEntity {
 
   @override
   int get id;
+  @override
+  double get charge;
   @override
   SensorPerInfoEntity get sensorPerInfo;
   @override

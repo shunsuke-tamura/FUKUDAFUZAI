@@ -10,6 +10,7 @@ class ShootEntity with _$ShootEntity {
 
   const factory ShootEntity({
     required int id,
+    required double charge,
     required SensorPerInfoEntity sensorPerInfo,
   }) = _ShootEntity;
 
