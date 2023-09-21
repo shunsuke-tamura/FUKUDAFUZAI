@@ -310,10 +310,12 @@ class _RootPageState extends ConsumerState<GamePage> {
             ),
             Positioned(
               top: 60,
+              left: 16,
               child: SizedBox(
                 height: 40,
                 width: 200,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'id: ${userSetting?.id ?? 404}',
