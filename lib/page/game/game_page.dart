@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import 'package:fukuda_fuzai/model/document/user_setting/user_setting_response.d
 import 'package:fukuda_fuzai/model/entity/sensor_per_info/sensor_per_info_entity.dart';
 import 'package:fukuda_fuzai/model/entity/shoot/shoot_entity.dart';
 import 'package:fukuda_fuzai/model/entity/user_setting/user_setting_entity.dart';
+import 'package:fukuda_fuzai/provider/domain_providers.dart';
 import 'package:fukuda_fuzai/util/constant/color_constant.dart';
 import 'package:fukuda_fuzai/util/constant/enum/message_type_enum.dart';
 import 'package:fukuda_fuzai/util/constant/text_style_constant.dart';
@@ -42,6 +44,7 @@ class _RootPageState extends ConsumerState<GamePage> {
   bool isVisibleLazer = true;
   bool isLoading = true;
   bool isFirst = true;
+  late DateTime tapTime;
 
   @override
   void dispose() {
@@ -153,6 +156,7 @@ class _RootPageState extends ConsumerState<GamePage> {
   }
 
   void shoot() {
+    ref.read(audioProvider).play(AssetSource('audios/burn.mp3'));
     isVisibleLazer = true;
     isFirst = false;
     final xRoute = ref.read(xRouteProvider);
@@ -164,7 +168,9 @@ class _RootPageState extends ConsumerState<GamePage> {
         sensorPerInfo: SensorPerInfoEntity(
           acc: AccDocument(x: acc.x, y: acc.y, z: acc.z),
           gyro: GyrDocument(x: xPercent, y: gyr.y, z: zPercent),
-        ));
+        ),
+        charge:
+            DateTime.now().difference(tapTime).abs().inMilliseconds * 0.001);
     final message = MessageEntity(type: 'shoot', data: shoot);
     final json = message.toJson();
     final List<int> codeUnits = jsonEncode(json).codeUnits;
@@ -229,7 +235,7 @@ class _RootPageState extends ConsumerState<GamePage> {
                                 top: isVisibleLazer ? 0 : height * 0.60,
                                 duration: const Duration(milliseconds: 50),
                                 child: isFirst
-                                    ? Text('大砲をタップして！\n下のバーで感度が変わるよ！')
+                                    ? SizedBox(width: 200,child: Text('1.大砲を長押しして下にスライドすると発射するよ！\n2.画面の中央にスマホを向けて"gyro reset"を押して！\n3.下のバーで感度が変わるよ！'))
                                     : Image.asset(
                                         'assets/images/ball.png',
                                         height: 30,
@@ -240,7 +246,12 @@ class _RootPageState extends ConsumerState<GamePage> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: shoot,
+                        onTapDown: (_) {
+                          tapTime = DateTime.now();
+                          ref.read(audioProvider).play(AssetSource('audios/moter.mp3'));
+                        },
+                        onTapUp: (_) => shoot,
+                        onTapCancel: shoot,
                         child: AnimatedContainer(
                           alignment: Alignment.topCenter,
                           duration: const Duration(seconds: 1),
