@@ -312,7 +312,7 @@ class _RootPageState extends ConsumerState<GamePage> {
               top: 60,
               child: SizedBox(
                 height: 40,
-                width: 80,
+                width: 200,
                 child: Column(
                   children: [
                     Text(
